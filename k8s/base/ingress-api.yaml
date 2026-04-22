@@ -11,6 +11,11 @@ metadata:
     nginx.ingress.kubernetes.io/upstream-vhost: "prod.socratic-event.com"
     # Required for ExternalName services — use the service DNS name as upstream
     nginx.ingress.kubernetes.io/service-upstream: "true"
+    # Send correct SNI during TLS handshake so the backend serves the right
+    # virtual host. Without this nginx connects to the default vhost on the
+    # shared server which rejects write methods (POST/PUT/DELETE) with 405.
+    nginx.ingress.kubernetes.io/proxy-ssl-server-name: "on"
+    nginx.ingress.kubernetes.io/proxy-ssl-name: "prod.socratic-event.com"
     # Allow self-signed or internal TLS on the backend
     nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
