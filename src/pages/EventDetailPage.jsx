@@ -57,15 +57,6 @@ export default function EventDetailPage() {
     });
   };
 
-  const formatTime12 = (dateStr) => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const handleQty = (tierName, delta) => {
     setQuantities((prev) => {
       const current = prev[tierName] || 0;

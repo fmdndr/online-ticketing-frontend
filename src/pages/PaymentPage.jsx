@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { CreditCard, Mail, Shield, Lock, ChevronRight, Truck, Headphones, Clock, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { getBasket, checkout, USER_ID } from '../services/api';
 import heroBanner from '../assets/images/event_hero_banner.png';
@@ -7,7 +7,6 @@ import './PaymentPage.css';
 
 export default function PaymentPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [cardName, setCardName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
@@ -19,7 +18,6 @@ export default function PaymentPage() {
   const [basketItems, setBasketItems] = useState([]);
   const [eventInfo, setEventInfo] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   // Checkout state
   const [processing, setProcessing] = useState(false);
@@ -38,14 +36,11 @@ export default function PaymentPage() {
   }, []);
 
   const loadBasketData = async () => {
-    setLoading(true);
-
     // Try to get data from navigation state first
     if (location.state?.items) {
       setBasketItems(location.state.items);
       setEventInfo(location.state.event);
       setTotalPrice(location.state.subtotal || 0);
-      setLoading(false);
       return;
     }
 
@@ -58,8 +53,6 @@ export default function PaymentPage() {
       }
     } catch {
       // Basket may not exist yet
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -14,7 +14,7 @@ pipeline {
       defaultValue: 'main',
       description: 'Git branch to build. Set automatically by the GitHub Actions webhook trigger.'
     )
-    string(name: 'NODE_VERSION', defaultValue: '20.11.1', description: 'Node.js version to install if missing (Linux x64/arm64)')
+    string(name: 'NODE_VERSION', defaultValue: '22.15.0', description: 'Node.js version to install if missing (Linux x64/arm64)')
   }
 
   environment {
