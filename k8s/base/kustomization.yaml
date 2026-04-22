@@ -9,7 +9,5 @@ resources:
   - namespace.yaml
   - deployment.yaml
   - service.yaml
-  - backend-service.yaml
   - configmap.yaml
   - ingress.yaml
-  - ingress-api.yaml

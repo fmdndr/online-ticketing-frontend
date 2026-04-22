@@ -46,14 +46,6 @@ patches:
         path: /spec/tls/0/secretName
         value: online-ticketing-frontend-tls
 
-  - target:
-      kind: Ingress
-      name: online-ticketing-api-proxy
-    patch: |
-      - op: replace
-        path: /spec/rules/0/host
-        value: socratic-event.com
-
   # Production: tuned resource limits for a lightweight nginx static app
   - target:
       kind: Deployment
