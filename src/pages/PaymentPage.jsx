@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { CreditCard, Mail, Shield, Lock, ChevronRight, Truck, Headphones, Clock, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { CreditCard, Mail, Shield, Lock, ChevronRight, Truck, Headphones, Clock, CheckCircle, Loader } from 'lucide-react';
 import { getBasket, checkout, USER_ID } from '../services/api';
+import { useToast } from '../components/Toast/useToast';
+import { ToastContainer } from '../components/Toast/Toast';
 import heroBanner from '../assets/images/event_hero_banner.png';
 import './PaymentPage.css';
 
 export default function PaymentPage() {
   const location = useLocation();
+  const { toasts, addToast, removeToast } = useToast();
   const [cardName, setCardName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
@@ -89,8 +92,7 @@ export default function PaymentPage() {
   const handleCheckout = async () => {
     // Basic validation
     if (!cardName.trim() || !cardNumber.trim() || !expiry.trim() || !cvc.trim()) {
-      setCheckoutResult('error');
-      setCheckoutMessage('Please fill in all payment fields.');
+      addToast('Please fill in all payment fields.', 'warning');
       return;
     }
 
@@ -109,8 +111,7 @@ export default function PaymentPage() {
       setCheckoutResult('success');
       setCheckoutMessage('Your tickets have been confirmed! Payment is being processed.');
     } catch (err) {
-      setCheckoutResult('error');
-      setCheckoutMessage(err.message || 'Checkout failed. Please try again.');
+      addToast(err.message || 'Checkout failed. Please try again.');
     } finally {
       setProcessing(false);
     }
@@ -126,40 +127,26 @@ export default function PaymentPage() {
 
   return (
     <div className="payment-page">
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       <div className="breadcrumb breadcrumb--payment">
         <Link to={backTo}>← Back to Event</Link>
       </div>
 
       {/* Checkout Result Overlay */}
-      {checkoutResult && (
-        <div className={`checkout-result ${checkoutResult === 'success' ? 'checkout-result--success' : 'checkout-result--error'}`} id="checkout-result">
+      {checkoutResult === 'success' && (
+        <div className="checkout-result checkout-result--success" id="checkout-result">
           <div className="checkout-result__card card">
-            {checkoutResult === 'success' ? (
-              <CheckCircle size={48} className="checkout-result__icon checkout-result__icon--success" />
-            ) : (
-              <XCircle size={48} className="checkout-result__icon checkout-result__icon--error" />
-            )}
-            <h2 className="checkout-result__title">
-              {checkoutResult === 'success' ? 'Payment Confirmed!' : 'Payment Failed'}
-            </h2>
+            <CheckCircle size={48} className="checkout-result__icon checkout-result__icon--success" />
+            <h2 className="checkout-result__title">Payment Confirmed!</h2>
             <p className="checkout-result__message">{checkoutMessage}</p>
-            {checkoutResult === 'success' ? (
-              <div className="checkout-result__actions">
-                <Link to="/orders" className="btn btn-primary checkout-result__btn">
-                  View My Orders
-                </Link>
-                <Link to="/" className="btn btn-outline checkout-result__btn">
-                  Browse More Events
-                </Link>
-              </div>
-            ) : (
-              <button
-                className="btn btn-outline checkout-result__btn"
-                onClick={() => setCheckoutResult(null)}
-              >
-                Try Again
-              </button>
-            )}
+            <div className="checkout-result__actions">
+              <Link to="/orders" className="btn btn-primary checkout-result__btn">
+                View My Orders
+              </Link>
+              <Link to="/" className="btn btn-outline checkout-result__btn">
+                Browse More Events
+              </Link>
+            </div>
           </div>
         </div>
       )}
@@ -184,11 +171,11 @@ export default function PaymentPage() {
           </div>
         </div>
 
-        <div className="payment-form__field">
-          <label className="payment-form__label">CARDHOLDER NAME</label>
+        <div className="mb-3">
+          <label className="form-label small text-uppercase text-secondary">Cardholder Name</label>
           <input
             type="text"
-            className="payment-form__input"
+            className="form-control bg-dark text-white border-secondary"
             placeholder="ALEXANDER KINETIC"
             value={cardName}
             onChange={(e) => setCardName(e.target.value.toUpperCase())}
@@ -196,12 +183,12 @@ export default function PaymentPage() {
           />
         </div>
 
-        <div className="payment-form__field">
-          <label className="payment-form__label">CARD NUMBER</label>
+        <div className="mb-3">
+          <label className="form-label small text-uppercase text-secondary">Card Number</label>
           <div className="payment-form__input-wrap">
             <input
               type="text"
-              className="payment-form__input"
+              className="form-control bg-dark text-white border-secondary"
               placeholder="0000 0000 0000 0000"
               value={cardNumber}
               onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
@@ -212,12 +199,12 @@ export default function PaymentPage() {
           </div>
         </div>
 
-        <div className="payment-form__row">
-          <div className="payment-form__field payment-form__field--half">
-            <label className="payment-form__label">EXPIRY DATE</label>
+        <div className="row g-3 mb-3">
+          <div className="col-6">
+            <label className="form-label small text-uppercase text-secondary">Expiry Date</label>
             <input
               type="text"
-              className="payment-form__input"
+              className="form-control bg-dark text-white border-secondary"
               placeholder="MM / YY"
               value={expiry}
               onChange={(e) => setExpiry(formatExpiry(e.target.value))}
@@ -225,11 +212,11 @@ export default function PaymentPage() {
               id="expiry-date"
             />
           </div>
-          <div className="payment-form__field payment-form__field--half">
-            <label className="payment-form__label">CVC / CVV</label>
+          <div className="col-6">
+            <label className="form-label small text-uppercase text-secondary">CVC / CVV</label>
             <input
               type="text"
-              className="payment-form__input"
+              className="form-control bg-dark text-white border-secondary"
               placeholder="123"
               value={cvc}
               onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
@@ -239,14 +226,18 @@ export default function PaymentPage() {
           </div>
         </div>
 
-        <label className="payment-form__checkbox" id="save-card-checkbox">
+        <div className="form-check mb-2" id="save-card-checkbox">
           <input
+            className="form-check-input"
             type="checkbox"
+            id="save-card-check"
             checked={saveCard}
             onChange={(e) => setSaveCard(e.target.checked)}
           />
-          <span>Save card details for future high-velocity events</span>
-        </label>
+          <label className="form-check-label small text-secondary" htmlFor="save-card-check">
+            Save card details for future high-velocity events
+          </label>
+        </div>
       </section>
 
       {/* Processing State Preview */}

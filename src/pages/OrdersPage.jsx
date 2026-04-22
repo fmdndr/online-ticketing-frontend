@@ -41,12 +41,12 @@ export default function OrdersPage() {
   const getStatusInfo = (status) => {
     // Handle both numeric (enum) and string status
     if (status === 2 || status === 'Completed') {
-      return { label: 'COMPLETED', icon: CheckCircle, className: 'order-status--completed' };
+      return { label: 'COMPLETED', icon: CheckCircle, className: 'order-status--completed', badgeClass: 'bg-success' };
     }
     if (status === 3 || status === 'Failed') {
-      return { label: 'FAILED', icon: XCircle, className: 'order-status--failed' };
+      return { label: 'FAILED', icon: XCircle, className: 'order-status--failed', badgeClass: 'bg-danger' };
     }
-    return { label: 'PENDING', icon: Clock, className: 'order-status--pending' };
+    return { label: 'PENDING', icon: Clock, className: 'order-status--pending', badgeClass: 'bg-warning text-dark' };
   };
 
   return (
@@ -70,13 +70,10 @@ export default function OrdersPage() {
 
       {/* Error */}
       {error && !loading && (
-        <div className="orders-error" id="orders-error">
-          <div className="orders-error__icon">
-            <AlertCircle size={28} />
-          </div>
-          <h3 className="orders-error__title">Unable to Load Orders</h3>
-          <p className="orders-error__text">{error}</p>
-          <button className="btn btn-outline" onClick={fetchOrders}>
+        <div className="alert alert-danger d-flex align-items-center gap-3 my-3" role="alert" id="orders-error">
+          <AlertCircle size={22} className="flex-shrink-0" />
+          <div className="flex-grow-1">{error}</div>
+          <button className="btn btn-sm btn-outline-danger ms-2" onClick={fetchOrders}>
             Try Again
           </button>
         </div>
@@ -122,8 +119,8 @@ export default function OrdersPage() {
                       {payment.orderId ? payment.orderId.substring(0, 8) + '...' : '-'}
                     </span>
                   </div>
-                  <span className={`order-card__status ${status.className}`}>
-                    <StatusIcon size={12} />
+                  <span className={`badge d-inline-flex align-items-center gap-1 ${status.badgeClass}`}>
+                    <StatusIcon size={11} />
                     {status.label}
                   </span>
                 </div>

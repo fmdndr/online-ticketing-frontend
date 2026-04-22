@@ -1,122 +1,105 @@
 /**
  * KINETIC Ticketing — API Service Layer
- * Routes through YARP Gateway at /api (proxied via Vite to http://localhost:5000)
+ * Routes through nginx /api proxy → https://prod.socratic-event.com/api
  *
  * Backend wraps all responses in ApiResponse<T>: { isSuccess, message, data }
  */
 
-const BASE_URL = '/api';
-const USER_ID = 'user-001';
+import axios from 'axios';
 
-// ─── Generic Fetch Helper ────────────────────────────────────────────────────
+export const USER_ID = 'user-001';
 
-async function request(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`;
-  const config = {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  };
+// ─── Axios instance ───────────────────────────────────────────────────────────
 
-  const response = await fetch(url, config);
+const api = axios.create({
+  baseURL: '/api',
+  headers: { 'Content-Type': 'application/json' },
+});
 
-  // If the response is not OK, try to parse error body
-  if (!response.ok) {
-    let errorMessage = `HTTP ${response.status}`;
-    try {
-      const errorBody = await response.json();
-      errorMessage = errorBody.message || errorMessage;
-    } catch {
-      // ignore JSON parse errors on error responses
+// ─── Response interceptor — unwrap ApiResponse<T> and normalise errors ────────
+
+api.interceptors.response.use(
+  (response) => {
+    // 204 No Content
+    if (response.status === 204) return null;
+
+    const json = response.data;
+
+    // Unwrap ApiResponse<T> envelope
+    if (json && typeof json.isSuccess !== 'undefined') {
+      if (!json.isSuccess) {
+        return Promise.reject(new Error(json.message || 'Operation failed'));
+      }
+      return json.data;
     }
-    throw new Error(errorMessage);
+
+    return json;
+  },
+  (error) => {
+    let errorMessage = `HTTP ${error.response?.status ?? 'unknown'}`;
+    const body = error.response?.data;
+    if (body?.message) errorMessage = body.message;
+    else if (typeof body === 'string' && body.length < 200) errorMessage = body;
+    return Promise.reject(new Error(errorMessage));
   }
-
-  // 204 No Content
-  if (response.status === 204) return null;
-
-  const json = await response.json();
-
-  // Unwrap ApiResponse<T> envelope
-  if (json && typeof json.isSuccess !== 'undefined') {
-    if (!json.isSuccess) {
-      throw new Error(json.message || 'Operation failed');
-    }
-    return json.data;
-  }
-
-  return json;
-}
+);
 
 // ─── Catalog Service ─────────────────────────────────────────────────────────
 
 export async function getEvents() {
-  return request('/catalog');
+  return api.get('/catalog');
 }
 
 export async function getEventById(id) {
-  return request(`/catalog/${id}`);
+  return api.get(`/catalog/${id}`);
 }
 
 export async function getEventsByCategory(category) {
-  return request(`/catalog/category/${encodeURIComponent(category)}`);
+  return api.get(`/catalog/category/${encodeURIComponent(category)}`);
 }
 
 export async function createEvent(eventData) {
-  return request('/catalog', {
-    method: 'POST',
-    body: JSON.stringify(eventData),
-  });
+  return api.post('/catalog', eventData);
 }
 
 export async function updateEvent(eventData) {
-  return request('/catalog', {
-    method: 'PUT',
-    body: JSON.stringify(eventData),
-  });
+  return api.put('/catalog', eventData);
 }
 
 export async function deleteEvent(id) {
-  return request(`/catalog/${id}`, { method: 'DELETE' });
+  return api.delete(`/catalog/${id}`);
 }
 
 // ─── Basket Service ──────────────────────────────────────────────────────────
 
 export async function getBasket(userId = USER_ID) {
-  return request(`/basket/${userId}`);
+  return api.get(`/basket/${userId}`);
 }
 
 export async function updateBasket(cart) {
-  return request('/basket', {
-    method: 'POST',
-    body: JSON.stringify(cart),
-  });
+  return api.post('/basket', cart);
 }
 
 export async function deleteBasket(userId = USER_ID) {
-  return request(`/basket/${userId}`, { method: 'DELETE' });
+  return api.delete(`/basket/${userId}`);
 }
 
 export async function checkout(checkoutData) {
-  return request('/basket/checkout', {
-    method: 'POST',
-    body: JSON.stringify(checkoutData),
-  });
+  return api.post('/basket/checkout', checkoutData);
 }
 
 // ─── Payment Service ─────────────────────────────────────────────────────────
 
 export async function getPayments() {
-  return request('/payment');
+  return api.get('/payment');
 }
 
 export async function getPaymentByOrderId(orderId) {
-  return request(`/payment/order/${orderId}`);
+  return api.get(`/payment/order/${orderId}`);
 }
 
 export async function getPaymentsByUserId(userId = USER_ID) {
-  return request(`/payment/user/${userId}`);
+  return api.get(`/payment/user/${userId}`);
 }
 
-// ─── Constants ───────────────────────────────────────────────────────────────
 
-export { USER_ID };

@@ -133,13 +133,10 @@ export default function EventsPage() {
 
       {/* Error State */}
       {error && !loading && (
-        <div className="events-error" id="events-error">
-          <div className="events-error__icon">
-            <AlertCircle size={28} />
-          </div>
-          <h3 className="events-error__title">Unable to Load Events</h3>
-          <p className="events-error__text">{error}</p>
-          <button className="btn btn-outline events-error__btn" onClick={fetchEvents}>
+        <div className="alert alert-danger d-flex align-items-center gap-3 my-3" role="alert" id="events-error">
+          <AlertCircle size={22} className="flex-shrink-0" />
+          <div className="flex-grow-1">{error}</div>
+          <button className="btn btn-sm btn-outline-danger ms-2" onClick={fetchEvents}>
             Try Again
           </button>
         </div>

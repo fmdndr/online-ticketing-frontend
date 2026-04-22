@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Minus, Plus, Clock, TrendingUp, ArrowRight, Loader, AlertCircle } from 'lucide-react';
 import { getEventById, updateBasket, USER_ID } from '../services/api';
+import { useToast } from '../components/Toast/useToast';
+import { ToastContainer } from '../components/Toast/Toast';
 import { featuredEvent } from '../data/mockData';
 import './EventDetailPage.css';
 
@@ -14,7 +16,7 @@ export default function EventDetailPage() {
   const [quantities, setQuantities] = useState({});
   const [timeLeft, setTimeLeft] = useState(600);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [cartError, setCartError] = useState(null);
+  const { toasts, addToast, removeToast } = useToast();
 
   const fetchEvent = useCallback(async () => {
     setLoading(true);
@@ -75,7 +77,6 @@ export default function EventDetailPage() {
     if (totalTickets === 0) return;
 
     setAddingToCart(true);
-    setCartError(null);
 
     const items = ticketTypes
       .filter((tier) => (quantities[tier.name] || 0) > 0)
@@ -102,7 +103,7 @@ export default function EventDetailPage() {
         },
       });
     } catch (err) {
-      setCartError(err.message || 'Failed to reserve tickets');
+      addToast(err.message || 'Failed to reserve tickets');
     } finally {
       setAddingToCart(false);
     }
@@ -169,6 +170,7 @@ export default function EventDetailPage() {
 
   return (
     <div className="detail-page container">
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       <div className="breadcrumb">
         <Link to="/">← Back to Events</Link>
       </div>
@@ -304,14 +306,6 @@ export default function EventDetailPage() {
     </div>
 
     <div className="detail-sidebar">
-
-      {/* Cart Error */}
-      {cartError && (
-        <div className="cart-error" id="cart-error">
-          <AlertCircle size={16} />
-          <span>{cartError}</span>
-        </div>
-      )}
 
       {/* Subtotal & CTA */}
       <section className="detail-footer" id="detail-footer">

@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import { useToast } from '../components/Toast/useToast';
+import { ToastContainer } from '../components/Toast/Toast';
 import { TrendingUp, ArrowUpRight, Plus, Trash2, Edit3, X, Loader, AlertCircle, DollarSign, Ticket, Activity } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getEvents, getPayments, createEvent, deleteEvent } from '../services/api';
@@ -20,9 +23,11 @@ export default function AdminPage() {
     category: 'Music',
     imageUrl: '',
     venue: '',
-    date: '',
+    date: null,
     ticketTypes: [{ name: 'Standard', price: 100, availableQuantity: 100 }],
   });
+
+  const { toasts, addToast, removeToast } = useToast();
 
   useEffect(() => {
     fetchData();
@@ -89,7 +94,7 @@ export default function AdminPage() {
     try {
       await createEvent({
         ...newEvent,
-        date: new Date(newEvent.date).toISOString(),
+        date: newEvent.date instanceof Date ? newEvent.date.toISOString() : new Date(newEvent.date).toISOString(),
         ticketTypes: newEvent.ticketTypes.map((t) => ({
           name: t.name,
           price: Number(t.price),
@@ -103,12 +108,12 @@ export default function AdminPage() {
         category: 'Music',
         imageUrl: '',
         venue: '',
-        date: '',
+        date: null,
         ticketTypes: [{ name: 'Standard', price: 100, availableQuantity: 100 }],
       });
       fetchData();
     } catch (err) {
-      alert('Failed to create event: ' + err.message);
+      addToast('Failed to create event: ' + err.message);
     } finally {
       setCreating(false);
     }
@@ -120,7 +125,7 @@ export default function AdminPage() {
       await deleteEvent(id);
       fetchData();
     } catch (err) {
-      alert('Failed to delete event: ' + err.message);
+      addToast('Failed to delete event: ' + err.message);
     }
   };
 
@@ -148,6 +153,7 @@ export default function AdminPage() {
 
   return (
     <div className="admin-page container">
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       {/* Sales Velocity Hero */}
       <section className="admin-hero" id="admin-hero">
         <h1 className="admin-hero__title">Sales Velocity</h1>
@@ -342,143 +348,188 @@ export default function AdminPage() {
 
       {/* Create Event Modal */}
       {showCreateModal && (
-        <div className="modal-overlay" id="create-event-modal">
-          <div className="modal card">
-            <div className="modal__header">
-              <h3 className="modal__title">Create New Event</h3>
-              <button className="modal__close" onClick={() => setShowCreateModal(false)}>
-                <X size={20} />
-              </button>
-            </div>
+        <>
+          <div
+            className="modal show d-block"
+            tabIndex="-1"
+            role="dialog"
+            id="create-event-modal"
+            style={{ zIndex: 1055 }}
+          >
+            <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+              <div className="modal-content" style={{ background: '#0F0F1A', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}>
 
-            <div className="modal__body">
-              <div className="modal__field">
-                <label className="modal__label">EVENT NAME</label>
-                <input
-                  className="modal__input"
-                  placeholder="e.g. Rock Festival 2026"
-                  value={newEvent.name}
-                  onChange={(e) => setNewEvent((prev) => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-
-              <div className="modal__field">
-                <label className="modal__label">DESCRIPTION</label>
-                <textarea
-                  className="modal__input modal__textarea"
-                  placeholder="Event description..."
-                  value={newEvent.description}
-                  onChange={(e) => setNewEvent((prev) => ({ ...prev, description: e.target.value }))}
-                />
-              </div>
-
-              <div className="modal__row">
-                <div className="modal__field modal__field--half">
-                  <label className="modal__label">CATEGORY</label>
-                  <select
-                    className="modal__input"
-                    value={newEvent.category}
-                    onChange={(e) => setNewEvent((prev) => ({ ...prev, category: e.target.value }))}
-                  >
-                    <option value="Music">Music</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Theater">Theater</option>
-                  </select>
-                </div>
-                <div className="modal__field modal__field--half">
-                  <label className="modal__label">DATE</label>
-                  <input
-                    type="datetime-local"
-                    className="modal__input"
-                    value={newEvent.date}
-                    onChange={(e) => setNewEvent((prev) => ({ ...prev, date: e.target.value }))}
+                <div className="modal-header" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
+                  <h5 className="modal-title fw-semibold">Create New Event</h5>
+                  <button
+                    type="button"
+                    className="btn-close btn-close-white"
+                    aria-label="Close"
+                    onClick={() => setShowCreateModal(false)}
                   />
                 </div>
-              </div>
 
-              <div className="modal__field">
-                <label className="modal__label">VENUE</label>
-                <input
-                  className="modal__input"
-                  placeholder="e.g. Central Park Arena, Istanbul"
-                  value={newEvent.venue}
-                  onChange={(e) => setNewEvent((prev) => ({ ...prev, venue: e.target.value }))}
-                />
-              </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase text-secondary">Event Name</label>
+                    <input
+                      className="form-control bg-dark text-white border-secondary"
+                      placeholder="e.g. Rock Festival 2026"
+                      value={newEvent.name}
+                      onChange={(e) => setNewEvent((prev) => ({ ...prev, name: e.target.value }))}
+                    />
+                  </div>
 
-              <div className="modal__field">
-                <label className="modal__label">IMAGE URL</label>
-                <input
-                  className="modal__input"
-                  placeholder="https://picsum.photos/seed/event/800/400"
-                  value={newEvent.imageUrl}
-                  onChange={(e) => setNewEvent((prev) => ({ ...prev, imageUrl: e.target.value }))}
-                />
-              </div>
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase text-secondary">Description</label>
+                    <textarea
+                      className="form-control bg-dark text-white border-secondary"
+                      rows={3}
+                      placeholder="Event description..."
+                      value={newEvent.description}
+                      onChange={(e) => setNewEvent((prev) => ({ ...prev, description: e.target.value }))}
+                    />
+                  </div>
 
-              {/* Ticket Types */}
-              <div className="modal__field">
-                <div className="modal__label-row">
-                  <label className="modal__label">TICKET TYPES</label>
-                  <button className="modal__add-tier" onClick={addTicketType}>
-                    <Plus size={14} /> Add Tier
+                  <div className="row g-3 mb-3">
+                    <div className="col-6">
+                      <label className="form-label small text-uppercase text-secondary">Category</label>
+                      <select
+                        className="form-select bg-dark text-white border-secondary"
+                        value={newEvent.category}
+                        onChange={(e) => setNewEvent((prev) => ({ ...prev, category: e.target.value }))}
+                      >
+                        <option value="Music">Music</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Theater">Theater</option>
+                      </select>
+                    </div>
+                    <div className="col-6">
+                      <label className="form-label small text-uppercase text-secondary">Date &amp; Time</label>
+                      <DatePicker
+                        selected={newEvent.date}
+                        onChange={(date) => setNewEvent((prev) => ({ ...prev, date }))}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="MMM d, yyyy HH:mm"
+                        placeholderText="Select date &amp; time"
+                        minDate={new Date()}
+                        className="form-control bg-dark text-white border-secondary"
+                        wrapperClassName="w-100"
+                        popperClassName="datepicker-dark"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase text-secondary">Venue</label>
+                    <input
+                      className="form-control bg-dark text-white border-secondary"
+                      placeholder="e.g. Central Park Arena, Istanbul"
+                      value={newEvent.venue}
+                      onChange={(e) => setNewEvent((prev) => ({ ...prev, venue: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase text-secondary">Image URL</label>
+                    <input
+                      className="form-control bg-dark text-white border-secondary"
+                      placeholder="https://picsum.photos/seed/event/800/400"
+                      value={newEvent.imageUrl}
+                      onChange={(e) => setNewEvent((prev) => ({ ...prev, imageUrl: e.target.value }))}
+                    />
+                  </div>
+
+                  {/* Ticket Types */}
+                  <div className="mb-2">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <label className="form-label small text-uppercase text-secondary mb-0">Ticket Types</label>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+                        onClick={addTicketType}
+                      >
+                        <Plus size={13} /> Add Tier
+                      </button>
+                    </div>
+
+                    {newEvent.ticketTypes.map((tier, i) => (
+                      <div key={i} className="row g-2 mb-2 align-items-center">
+                        <div className="col">
+                          <input
+                            className="form-control form-control-sm bg-dark text-white border-secondary"
+                            placeholder="Name"
+                            value={tier.name}
+                            onChange={(e) => updateTicketType(i, 'name', e.target.value)}
+                          />
+                        </div>
+                        <div className="col-3">
+                          <input
+                            type="number"
+                            className="form-control form-control-sm bg-dark text-white border-secondary"
+                            placeholder="Price"
+                            value={tier.price}
+                            onChange={(e) => updateTicketType(i, 'price', e.target.value)}
+                          />
+                        </div>
+                        <div className="col-3">
+                          <input
+                            type="number"
+                            className="form-control form-control-sm bg-dark text-white border-secondary"
+                            placeholder="Qty"
+                            value={tier.availableQuantity}
+                            onChange={(e) => updateTicketType(i, 'availableQuantity', e.target.value)}
+                          />
+                        </div>
+                        {newEvent.ticketTypes.length > 1 && (
+                          <div className="col-auto">
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => removeTicketType(i)}
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="modal-footer" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => setShowCreateModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleCreateEvent}
+                    disabled={creating || !newEvent.name || !newEvent.venue || !newEvent.date}
+                  >
+                    {creating ? (
+                      <>
+                        <Loader size={15} className="spin-icon me-1" /> Creating...
+                      </>
+                    ) : (
+                      'Create Event'
+                    )}
                   </button>
                 </div>
 
-                {newEvent.ticketTypes.map((tier, i) => (
-                  <div key={i} className="modal__tier-row">
-                    <input
-                      className="modal__input modal__input--sm"
-                      placeholder="Name"
-                      value={tier.name}
-                      onChange={(e) => updateTicketType(i, 'name', e.target.value)}
-                    />
-                    <input
-                      type="number"
-                      className="modal__input modal__input--sm"
-                      placeholder="Price"
-                      value={tier.price}
-                      onChange={(e) => updateTicketType(i, 'price', e.target.value)}
-                    />
-                    <input
-                      type="number"
-                      className="modal__input modal__input--sm"
-                      placeholder="Qty"
-                      value={tier.availableQuantity}
-                      onChange={(e) => updateTicketType(i, 'availableQuantity', e.target.value)}
-                    />
-                    {newEvent.ticketTypes.length > 1 && (
-                      <button className="modal__remove-tier" onClick={() => removeTicketType(i)}>
-                        <X size={14} />
-                      </button>
-                    )}
-                  </div>
-                ))}
               </div>
             </div>
-
-            <div className="modal__footer">
-              <button className="btn btn-outline" onClick={() => setShowCreateModal(false)}>
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={handleCreateEvent}
-                disabled={creating || !newEvent.name || !newEvent.venue || !newEvent.date}
-              >
-                {creating ? (
-                  <>
-                    <Loader size={16} className="spin-icon" /> Creating...
-                  </>
-                ) : (
-                  'Create Event'
-                )}
-              </button>
-            </div>
           </div>
-        </div>
+          <div className="modal-backdrop show" style={{ zIndex: 1054 }} />
+        </>
       )}
     </div>
   );
