@@ -1,0 +1,83 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: online-ticketing-frontend
+
+resources:
+  - ../../base
+  - hpa.yaml
+
+images:
+  - name: docker.io/fmdx/online-ticketing-frontend
+    newTag: prod-latest
+
+replicas:
+  - name: online-ticketing-web
+    count: 1
+
+patches:
+  - target:
+      kind: Namespace
+      name: online-ticketing-frontend
+    patch: |
+      - op: add
+        path: /metadata/labels/environment
+        value: prod
+
+  - target:
+      kind: ConfigMap
+      name: online-ticketing-config
+    patch: |
+      - op: replace
+        path: /data/ENVIRONMENT
+        value: "prod"
+
+  - target:
+      kind: Ingress
+      name: online-ticketing-web
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: socratic-event.com
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: socratic-event.com
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: online-ticketing-frontend-tls
+
+  - target:
+      kind: Ingress
+      name: online-ticketing-api-proxy
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: socratic-event.com
+
+  # Production: tuned resource limits for a lightweight nginx static app
+  - target:
+      kind: Deployment
+      name: online-ticketing-web
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: "64Mi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: "50m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "256Mi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "500m"
+
+  # Production: enable safe-to-evict for cluster autoscaler
+  - target:
+      kind: Deployment
+      name: online-ticketing-web
+    patch: |
+      - op: add
+        path: /spec/template/metadata/annotations
+        value:
+          cluster-autoscaler.kubernetes.io/safe-to-evict: "true"

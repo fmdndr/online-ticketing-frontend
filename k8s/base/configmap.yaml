@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: online-ticketing-config
+  labels:
+    app.kubernetes.io/name: online-ticketing-web
+    app.kubernetes.io/part-of: online-ticketing
+data:
+  ENVIRONMENT: "prod"

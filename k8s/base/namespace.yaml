@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: online-ticketing-frontend
+  labels:
+    app.kubernetes.io/part-of: online-ticketing
+    app.kubernetes.io/managed-by: kustomize

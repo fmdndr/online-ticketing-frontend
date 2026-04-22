@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: online-ticketing-api-proxy
+  labels:
+    app.kubernetes.io/name: online-ticketing-api-proxy
+    app.kubernetes.io/part-of: online-ticketing
+  annotations:
+    # Route /api/* to the external backend over HTTPS
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/upstream-vhost: "prod.socratic-event.com"
+    # Required for ExternalName services — use the service DNS name as upstream
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+    # Allow self-signed or internal TLS on the backend
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: socratic-event.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: online-ticketing-backend
+                port:
+                  number: 443

@@ -1,0 +1,55 @@
+# ==============================================================================
+# GitHub Actions — Jenkins Trigger
+# ==============================================================================
+# This workflow's only job is to poke Jenkins and let it do all the heavy
+# lifting: build, test, Docker push, and Kubernetes deploy.
+#
+# Required GitHub Secrets:
+#   JENKINS_URL        - e.g. https://jenkins.doctai.ai
+#   JENKINS_USER       - Jenkins username
+#   JENKINS_TOKEN      - Jenkins API token (User → Configure → API Token)
+#   JENKINS_JOB_TOKEN  - Remote trigger token set in the Jenkins job config
+# ==============================================================================
+
+name: Trigger Jenkins
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trigger-jenkins:
+    name: 🚀 Trigger Jenkins Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📣 Poke Jenkins
+        # Secrets mapped to env vars so they are auto-masked in the Actions log
+        env:
+          JENKINS_URL: ${{ secrets.JENKINS_URL }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
+          JENKINS_JOB_TOKEN: ${{ secrets.JENKINS_JOB_TOKEN }}
+        run: |
+          echo "🔔 Triggering Jenkins for branch: $GITHUB_REF_NAME"
+
+          # token= MUST be a URL query parameter per Jenkins remote-trigger API.
+          # --user  authenticates with the Jenkins API token (bypasses CSRF).
+          # -f      fails immediately on any HTTP 4xx/5xx response.
+          # --max-time 30 aborts if Jenkins does not respond within 30 s.
+          # BRANCH is passed as a URL query parameter (not POST body) so Jenkins
+          # accepts it even before the pipeline has been scanned/run the first
+          # time (avoids HTTP 400 "This build is not parameterized").
+          curl -f \
+            --silent \
+            --show-error \
+            --max-time 30 \
+            -X POST \
+            "${JENKINS_URL}/job/online-ticketing-frontend/buildWithParameters?token=${JENKINS_JOB_TOKEN}&BRANCH=${GITHUB_REF_NAME}" \
+            --user "${JENKINS_USER}:${JENKINS_TOKEN}"
+
+          echo "✅ Jenkins pipeline triggered successfully."
