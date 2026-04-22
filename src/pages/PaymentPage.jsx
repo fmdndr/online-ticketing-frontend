@@ -126,264 +126,223 @@ export default function PaymentPage() {
   const backTo = eventInfo?.id ? `/event/${eventInfo.id}` : '/';
 
   return (
-    <div className="payment-page">
+    <div className="payment-page container-fluid py-4">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-      <div className="breadcrumb breadcrumb--payment">
-        <Link to={backTo}>← Back to Event</Link>
-      </div>
 
-      {/* Checkout Result Overlay */}
+      {/* Breadcrumb */}
+      <nav aria-label="breadcrumb" className="mb-4">
+        <ol className="breadcrumb mb-0">
+          <li className="breadcrumb-item"><Link to={backTo}>Back to Event</Link></li>
+          <li className="breadcrumb-item active">Payment</li>
+        </ol>
+      </nav>
+
+      {/* Success Overlay */}
       {checkoutResult === 'success' && (
-        <div className="checkout-result checkout-result--success" id="checkout-result">
-          <div className="checkout-result__card card">
-            <CheckCircle size={48} className="checkout-result__icon checkout-result__icon--success" />
-            <h2 className="checkout-result__title">Payment Confirmed!</h2>
-            <p className="checkout-result__message">{checkoutMessage}</p>
-            <div className="checkout-result__actions">
-              <Link to="/orders" className="btn btn-primary checkout-result__btn">
-                View My Orders
-              </Link>
-              <Link to="/" className="btn btn-outline checkout-result__btn">
-                Browse More Events
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Hero */}
-      <section className="payment-hero" id="payment-hero">
-        <h1 className="payment-hero__title">
-          COMPLETE SECURE<br />PAYMENT
-        </h1>
-        <p className="payment-hero__desc">
-          Review your transaction and finalize the ledger entry.
-        </p>
-      </section>
-
-      {/* Card Form */}
-      <section className="payment-form card" id="payment-form">
-        <div className="payment-form__header">
-          <h3 className="payment-form__title">Credit or Debit Card</h3>
-          <div className="payment-form__icons">
-            <Mail size={16} />
-            <Shield size={16} />
-          </div>
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label small text-uppercase text-secondary">Cardholder Name</label>
-          <input
-            type="text"
-            className="form-control bg-dark text-white border-secondary"
-            placeholder="ALEXANDER SOCRATIC"
-            value={cardName}
-            onChange={(e) => setCardName(e.target.value.toUpperCase())}
-            id="cardholder-name"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label small text-uppercase text-secondary">Card Number</label>
-          <div className="payment-form__input-wrap">
-            <input
-              type="text"
-              className="form-control bg-dark text-white border-secondary"
-              placeholder="0000 0000 0000 0000"
-              value={cardNumber}
-              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-              maxLength={19}
-              id="card-number"
-            />
-            <CreditCard size={18} className="payment-form__input-icon" />
-          </div>
-        </div>
-
-        <div className="row g-3 mb-3">
-          <div className="col-6">
-            <label className="form-label small text-uppercase text-secondary">Expiry Date</label>
-            <input
-              type="text"
-              className="form-control bg-dark text-white border-secondary"
-              placeholder="MM / YY"
-              value={expiry}
-              onChange={(e) => setExpiry(formatExpiry(e.target.value))}
-              maxLength={7}
-              id="expiry-date"
-            />
-          </div>
-          <div className="col-6">
-            <label className="form-label small text-uppercase text-secondary">CVC / CVV</label>
-            <input
-              type="text"
-              className="form-control bg-dark text-white border-secondary"
-              placeholder="123"
-              value={cvc}
-              onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
-              maxLength={4}
-              id="cvc-input"
-            />
-          </div>
-        </div>
-
-        <div className="form-check mb-2" id="save-card-checkbox">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="save-card-check"
-            checked={saveCard}
-            onChange={(e) => setSaveCard(e.target.checked)}
-          />
-          <label className="form-check-label small text-secondary" htmlFor="save-card-check">
-            Save card details for future high-velocity events
-          </label>
-        </div>
-      </section>
-
-      {/* Processing State Preview */}
-      {processing && (
-        <section className="processing-preview processing-preview--active" id="processing-preview">
-          <p className="processing-preview__label">TRANSACTION IN PROGRESS</p>
-          <div className="processing-preview__bar">
-            <Loader size={16} className="spin-icon" />
-            <span>Processing Secure Transaction...</span>
-          </div>
-        </section>
-      )}
-
-      {/* Event Preview Card */}
-      <section className="event-preview" id="event-preview">
-        <div className="event-preview__card">
-          <img
-            src={eventImage}
-            alt="Event"
-            className="event-preview__image"
-            onError={(e) => { e.target.src = heroBanner; }}
-          />
-          <div className="event-preview__overlay">
-            <span className="event-preview__confirmed badge badge-green">
-              {checkoutResult === 'success' ? 'CONFIRMED' : 'PENDING'}
-            </span>
-            <h3 className="event-preview__title">{eventName.toUpperCase()}</h3>
-            <p className="event-preview__venue">{eventVenue}</p>
-            <div className="event-preview__timer">
-              <Clock size={12} />
-              <span>TIMER</span>
-              <span className="event-preview__timer-value">{formatTimer(timer)}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Order Summary */}
-      <section className="order-summary" id="order-summary">
-        <div className="order-summary__header">
-          <span className="order-summary__tx-label">TRANSACTION ID</span>
-          <span className="order-summary__tx-id">{txId}</span>
-        </div>
-
-        {/* Dynamic basket items */}
-        {basketItems.length > 0 ? (
-          basketItems.map((item, i) => (
-            <div className="order-summary__line" key={i}>
-              <div>
-                <strong>{item.ticketTypeName} × {item.quantity}</strong>
-                <p className="order-summary__line-sub">{item.eventName}</p>
+        <>
+          <div className="modal show d-block" style={{ zIndex: 1055 }} data-bs-theme="dark">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content text-center p-2">
+                <div className="modal-body">
+                  <CheckCircle size={56} className="text-success mb-3" />
+                  <h4 className="fw-bold mb-2">Payment Confirmed!</h4>
+                  <p className="text-secondary mb-4">{checkoutMessage}</p>
+                  <div className="d-flex gap-2 justify-content-center">
+                    <Link to="/orders" className="btn btn-primary">View My Orders</Link>
+                    <Link to="/" className="btn btn-outline-secondary">Browse Events</Link>
+                  </div>
+                </div>
               </div>
-              <span className="order-summary__line-amount">
-                ${(item.unitPrice * item.quantity).toFixed(2)}
-              </span>
             </div>
-          ))
-        ) : (
-          <div className="order-summary__line">
-            <div>
-              <strong>No items in basket</strong>
-              <p className="order-summary__line-sub">Add tickets to continue</p>
+          </div>
+          <div className="modal-backdrop show" style={{ zIndex: 1054 }} />
+        </>
+      )}
+
+      <div className="row g-4 justify-content-center">
+        {/* Left: Hero + Form */}
+        <div className="col-lg-7">
+          {/* Hero */}
+          <div className="mb-4" id="payment-hero">
+            <h2 className="fw-black mb-1 lh-1">COMPLETE SECURE<br />PAYMENT</h2>
+            <p className="text-secondary small mb-0">Review your transaction and finalize the ledger entry.</p>
+          </div>
+
+          {/* Card Form */}
+          <div className="card mb-3" id="payment-form">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <h6 className="mb-0 fw-bold">Credit or Debit Card</h6>
+              <div className="d-flex gap-2 text-secondary"><Mail size={15} /><Shield size={15} /></div>
             </div>
-            <span className="order-summary__line-amount">$0.00</span>
+            <div className="card-body">
+              <div className="mb-3">
+                <label className="form-label small text-uppercase text-secondary">Cardholder Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="ALEXANDER SOCRATIC"
+                  value={cardName}
+                  onChange={(e) => setCardName(e.target.value.toUpperCase())}
+                  id="cardholder-name"
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label small text-uppercase text-secondary">Card Number</label>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="0000 0000 0000 0000"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                    maxLength={19}
+                    id="card-number"
+                  />
+                  <span className="input-group-text"><CreditCard size={16} /></span>
+                </div>
+              </div>
+              <div className="row g-3 mb-3">
+                <div className="col-6">
+                  <label className="form-label small text-uppercase text-secondary">Expiry Date</label>
+                  <input type="text" className="form-control" placeholder="MM / YY" value={expiry} onChange={(e) => setExpiry(formatExpiry(e.target.value))} maxLength={7} id="expiry-date" />
+                </div>
+                <div className="col-6">
+                  <label className="form-label small text-uppercase text-secondary">CVC / CVV</label>
+                  <input type="text" className="form-control" placeholder="123" value={cvc} onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))} maxLength={4} id="cvc-input" />
+                </div>
+              </div>
+              <div className="form-check">
+                <input className="form-check-input" type="checkbox" id="save-card-check" checked={saveCard} onChange={(e) => setSaveCard(e.target.checked)} />
+                <label className="form-check-label small text-secondary" htmlFor="save-card-check">
+                  Save card details for future high-velocity events
+                </label>
+              </div>
+            </div>
           </div>
-        )}
 
-        <div className="order-summary__line">
-          <div>
-            <strong>Facility & Processing Fee</strong>
-          </div>
-          <span className="order-summary__line-amount">${serviceFee.toFixed(2)}</span>
-        </div>
-
-        <div className="order-summary__line">
-          <div>
-            <strong>Insurance (Protection Plan)</strong>
-          </div>
-          <span className="order-summary__line-amount">${insuranceFee.toFixed(2)}</span>
-        </div>
-
-        {/* Total */}
-        <div className="order-summary__total" id="order-total">
-          <div className="order-summary__total-label">TOTAL PAYABLE</div>
-          <div className="order-summary__total-row">
-            <span className="order-summary__total-amount">${grandTotal.toFixed(2)}</span>
-            <span className="order-summary__total-currency">USD</span>
-          </div>
-        </div>
-
-        {/* Pay Button */}
-        <button
-          className="btn btn-primary order-summary__pay-btn"
-          id="pay-now-btn"
-          onClick={handleCheckout}
-          disabled={processing || basketItems.length === 0}
-        >
-          {processing ? (
-            <>
-              <Loader size={18} className="spin-icon" /> PROCESSING...
-            </>
-          ) : (
-            <>
-              PAY NOW <ChevronRight size={18} />
-            </>
+          {/* Processing */}
+          {processing && (
+            <div className="card mb-3" id="processing-preview">
+              <div className="card-body d-flex align-items-center gap-3">
+                <Loader size={20} className="spin-icon text-primary flex-shrink-0" />
+                <div>
+                  <p className="text-secondary mb-1" style={{ fontSize: '0.65rem', letterSpacing: '1px', fontWeight: 600 }}>TRANSACTION IN PROGRESS</p>
+                  <small className="fw-semibold">Processing Secure Transaction...</small>
+                </div>
+              </div>
+            </div>
           )}
-        </button>
 
-        {/* Security Badge */}
-        <div className="order-summary__security">
-          <Lock size={12} />
-          <span>256-BIT SSL SECURED LEDGER</span>
+          {/* Priority Cards */}
+          <div className="row g-3" id="priority-cards">
+            <div className="col-6">
+              <div className="card">
+                <div className="card-body d-flex align-items-center gap-3 py-3">
+                  <div className="rounded-2 p-2 bg-success bg-opacity-10 d-inline-flex flex-shrink-0"><Truck size={16} className="text-success" /></div>
+                  <div><small className="text-secondary d-block" style={{ fontSize: '0.62rem' }}>PRIORITY</small><strong className="small">Delivery</strong></div>
+                </div>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="card">
+                <div className="card-body d-flex align-items-center gap-3 py-3">
+                  <div className="rounded-2 p-2 bg-primary bg-opacity-10 d-inline-flex flex-shrink-0"><Headphones size={16} className="text-primary" /></div>
+                  <div><small className="text-secondary d-block" style={{ fontSize: '0.62rem' }}>PRIORITY</small><strong className="small">Concierge</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
 
-      {/* Priority Cards */}
-      <section className="priority-cards" id="priority-cards">
-        <div className="priority-card">
-          <div className="priority-card__icon priority-card__icon--green">
-            <Truck size={18} />
+        {/* Right: Event preview + Order Summary */}
+        <div className="col-lg-5">
+          {/* Event Preview */}
+          <div className="event-preview mb-3" id="event-preview">
+            <div className="event-preview__card">
+              <img src={eventImage} alt="Event" className="event-preview__image" onError={(e) => { e.target.src = heroBanner; }} />
+              <div className="event-preview__overlay">
+                <span className="event-preview__confirmed badge badge-green">
+                  {checkoutResult === 'success' ? 'CONFIRMED' : 'PENDING'}
+                </span>
+                <h3 className="event-preview__title">{eventName.toUpperCase()}</h3>
+                <p className="event-preview__venue">{eventVenue}</p>
+                <div className="event-preview__timer">
+                  <Clock size={12} />
+                  <span>TIMER</span>
+                  <span className="event-preview__timer-value">{formatTimer(timer)}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <span className="priority-card__label">PRIORITY</span>
-            <strong>Delivery</strong>
-          </div>
-        </div>
-        <div className="priority-card">
-          <div className="priority-card__icon priority-card__icon--purple">
-            <Headphones size={18} />
-          </div>
-          <div>
-            <span className="priority-card__label">PRIORITY</span>
-            <strong>Concierge</strong>
-          </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="payment-footer" id="payment-footer">
-        <div className="payment-footer__links">
-          <a href="#">Terms of Sale</a>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Anti-Scalper Policy</a>
+          {/* Order Summary */}
+          <div className="card mb-3" id="order-summary">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <small className="text-secondary fw-semibold" style={{ letterSpacing: '0.5px' }}>TRANSACTION ID</small>
+              <small className="fw-semibold" style={{ fontFamily: 'monospace' }}>{txId}</small>
+            </div>
+            <ul className="list-group list-group-flush">
+              {basketItems.length > 0 ? (
+                basketItems.map((item, i) => (
+                  <li key={i} className="list-group-item d-flex justify-content-between align-items-start px-3 py-2">
+                    <div>
+                      <div className="fw-semibold small">{item.ticketTypeName} × {item.quantity}</div>
+                      <div className="text-secondary small">{item.eventName}</div>
+                    </div>
+                    <span className="fw-bold small">${(item.unitPrice * item.quantity).toFixed(2)}</span>
+                  </li>
+                ))
+              ) : (
+                <li className="list-group-item d-flex justify-content-between px-3 py-2">
+                  <div><div className="fw-semibold small">No items in basket</div><div className="text-secondary small">Add tickets to continue</div></div>
+                  <span className="fw-bold small">$0.00</span>
+                </li>
+              )}
+              <li className="list-group-item d-flex justify-content-between px-3 py-2">
+                <small>Facility &amp; Processing Fee</small><small className="fw-semibold">${serviceFee.toFixed(2)}</small>
+              </li>
+              <li className="list-group-item d-flex justify-content-between px-3 py-2">
+                <small>Insurance (Protection Plan)</small><small className="fw-semibold">${insuranceFee.toFixed(2)}</small>
+              </li>
+            </ul>
+            <div className="card-body" id="order-total">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <small className="fw-semibold text-secondary" style={{ letterSpacing: '0.5px' }}>TOTAL PAYABLE</small>
+                <div className="d-flex align-items-baseline gap-2">
+                  <span className="fw-black fs-4">${grandTotal.toFixed(2)}</span>
+                  <small className="text-secondary">USD</small>
+                </div>
+              </div>
+              <button
+                className="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2 mb-3"
+                id="pay-now-btn"
+                onClick={handleCheckout}
+                disabled={processing || basketItems.length === 0}
+              >
+                {processing ? (
+                  <><Loader size={18} className="spin-icon" /> PROCESSING...</>
+                ) : (
+                  <>PAY NOW <ChevronRight size={18} /></>
+                )}
+              </button>
+              <div className="d-flex align-items-center justify-content-center gap-2 text-secondary">
+                <Lock size={12} />
+                <small style={{ fontSize: '0.65rem', letterSpacing: '0.8px' }}>256-BIT SSL SECURED LEDGER</small>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center" id="payment-footer">
+            <div className="d-flex justify-content-center gap-3 mb-2">
+              <a href="#" className="text-secondary small text-decoration-none">Terms of Sale</a>
+              <a href="#" className="text-secondary small text-decoration-none">Privacy Policy</a>
+              <a href="#" className="text-secondary small text-decoration-none">Anti-Scalper Policy</a>
+            </div>
+            <p className="text-secondary mb-0 small">© 2026 SOCRATIC EVENT INC.</p>
+          </div>
         </div>
-        <p className="payment-footer__copy">© 2026 SOCRATIC EVENT INC.</p>
-      </footer>
+      </div>
     </div>
   );
 }

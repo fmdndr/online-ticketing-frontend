@@ -1,10 +1,7 @@
 .payment-page {
   background: var(--bg-light);
   position: relative;
-  max-width: 680px;
-  margin: 0 auto;
   min-height: 100vh;
-  box-shadow: var(--shadow-xl);
   padding-bottom: var(--space-2xl);
 }
 

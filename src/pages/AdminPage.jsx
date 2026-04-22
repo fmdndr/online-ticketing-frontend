@@ -152,199 +152,209 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="admin-page container-fluid">
+    <div className="admin-page container-fluid py-4">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-      {/* Sales Velocity Hero */}
-      <section className="admin-hero" id="admin-hero">
-        <h1 className="admin-hero__title">Sales Velocity</h1>
-        <p className="admin-hero__desc">
-          Real-time throughput monitoring for live event distribution channels.
-        </p>
-      </section>
 
-      {/* Stats Cards */}
-      <section className="admin-stats" id="admin-stats">
-        <div className="stat-card">
-          <div className="stat-card__icon stat-card__icon--green">
-            <DollarSign size={18} />
-          </div>
-          <div className="stat-card__content">
-            <span className="stat-card__label">TOTAL REVENUE</span>
-            <span className="stat-card__value">${totalRevenue.toFixed(2)}</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card__icon stat-card__icon--blue">
-            <Ticket size={18} />
-          </div>
-          <div className="stat-card__content">
-            <span className="stat-card__label">TRANSACTIONS</span>
-            <span className="stat-card__value">{totalTransactions}</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card__icon stat-card__icon--purple">
-            <Activity size={18} />
-          </div>
-          <div className="stat-card__content">
-            <span className="stat-card__label">EVENTS LIVE</span>
-            <span className="stat-card__value">{events.length}</span>
-          </div>
-        </div>
-      </section>
+      {/* Hero */}
+      <div className="mb-4">
+        <h2 className="fw-black mb-1">Sales Velocity</h2>
+        <p className="text-secondary small mb-0">Real-time throughput monitoring for live event distribution channels.</p>
+      </div>
 
-      {/* Transaction Trends Chart */}
-      <section className="trends-section card" id="trends-chart">
-        <h3 className="trends-section__title">Transaction Trends</h3>
-        <div className="trends-section__chart">
-          <ResponsiveContainer width="100%" height={180}>
-            <LineChart data={paymentChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-              <XAxis
-                dataKey="time"
-                tick={{ fontSize: 10, fill: '#9CA3AF' }}
-                axisLine={{ stroke: '#E5E7EB' }}
-                tickLine={false}
-                interval={2}
-              />
-              <YAxis hide />
-              <Tooltip
-                contentStyle={{
-                  background: '#0F0F1A',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '8px 12px',
-                  fontSize: '12px',
-                  color: '#fff',
-                }}
-                itemStyle={{ color: '#A78BFA' }}
-                labelStyle={{ color: '#9CA3AF', fontSize: '10px' }}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#4F46E5"
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{ r: 5, fill: '#4F46E5', stroke: '#fff', strokeWidth: 2 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      {/* Stats Row */}
+      <div className="row g-3 mb-4">
+        <div className="col-4">
+          <div className="card text-center h-100">
+            <div className="card-body py-3">
+              <div className="rounded-2 p-2 d-inline-flex mb-2" style={{ background: 'var(--accent-green)' }}>
+                <DollarSign size={18} className="text-white" />
+              </div>
+              <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>TOTAL REVENUE</p>
+              <p className="fw-bold mb-0 small">${totalRevenue.toFixed(2)}</p>
+            </div>
+          </div>
         </div>
-      </section>
+        <div className="col-4">
+          <div className="card text-center h-100">
+            <div className="card-body py-3">
+              <div className="rounded-2 p-2 d-inline-flex mb-2 bg-primary">
+                <Ticket size={18} className="text-white" />
+              </div>
+              <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>TRANSACTIONS</p>
+              <p className="fw-bold mb-0 small">{totalTransactions}</p>
+            </div>
+          </div>
+        </div>
+        <div className="col-4">
+          <div className="card text-center h-100">
+            <div className="card-body py-3">
+              <div className="rounded-2 p-2 d-inline-flex mb-2" style={{ background: '#7C3AED' }}>
+                <Activity size={18} className="text-white" />
+              </div>
+              <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>EVENTS LIVE</p>
+              <p className="fw-bold mb-0 small">{events.length}</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Peak Intensity */}
-      <section className="peak-section" id="peak-intensity">
-        <div className="peak-card">
-          <h3 className="peak-card__title">Peak Intensity</h3>
-          <p className="peak-card__desc">Success rate for processed transactions.</p>
-          <div className="peak-card__stat animate-fade-in-up">
-            <span className="peak-card__value">{successRate}%</span>
-          </div>
-          <div className="peak-card__change">
-            <ArrowUpRight size={14} />
-            <span>{completedPayments} OF {totalTransactions} COMPLETED</span>
+      {/* Chart + Peak side by side */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-8">
+          <div className="card h-100">
+            <div className="card-header d-flex align-items-center gap-2">
+              <TrendingUp size={15} />
+              <h6 className="mb-0 fw-bold">Transaction Trends</h6>
+            </div>
+            <div className="card-body">
+              <ResponsiveContainer width="100%" height={180}>
+                <LineChart data={paymentChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+                  <XAxis
+                    dataKey="time"
+                    tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                    axisLine={{ stroke: '#E5E7EB' }}
+                    tickLine={false}
+                    interval={2}
+                  />
+                  <YAxis hide />
+                  <Tooltip
+                    contentStyle={{ background: '#0F0F1A', border: 'none', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', color: '#fff' }}
+                    itemStyle={{ color: '#A78BFA' }}
+                    labelStyle={{ color: '#9CA3AF', fontSize: '10px' }}
+                  />
+                  <Line type="monotone" dataKey="value" stroke="#4F46E5" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#4F46E5', stroke: '#fff', strokeWidth: 2 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-      </section>
+        <div className="col-md-4">
+          <div className="card h-100 text-white" style={{ background: 'var(--gradient-peak)' }}>
+            <div className="card-body d-flex flex-column justify-content-between">
+              <div>
+                <h6 className="fw-bold text-white mb-1">Peak Intensity</h6>
+                <p className="small mb-3" style={{ color: 'rgba(255,255,255,0.7)' }}>Success rate for processed transactions.</p>
+              </div>
+              <div>
+                <div className="mb-2">
+                  <span className="fw-black" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>{successRate}%</span>
+                </div>
+                <div className="d-flex align-items-center gap-2">
+                  <ArrowUpRight size={14} />
+                  <small className="fw-semibold" style={{ letterSpacing: '0.8px' }}>{completedPayments} OF {totalTransactions} COMPLETED</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Event Management */}
-      <section className="event-management card" id="event-management">
-        <div className="event-management__header">
-          <h3 className="event-management__title">Event Management</h3>
+      <div className="card mb-4" id="event-management">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h6 className="mb-0 fw-bold">Event Management</h6>
           <button
-            className="btn btn-primary event-management__add-btn"
+            className="btn btn-primary btn-sm d-flex align-items-center gap-1"
             onClick={() => setShowCreateModal(true)}
             id="create-event-btn"
           >
-            <Plus size={16} /> New Event
+            <Plus size={14} /> New Event
           </button>
         </div>
-
-        {loading ? (
-          <div className="event-management__loading">
-            <Loader size={20} className="spin-icon" />
-            <span>Loading events...</span>
-          </div>
-        ) : error ? (
-          <div className="event-management__error">
-            <AlertCircle size={16} />
-            <span>{error}</span>
-          </div>
-        ) : events.length === 0 ? (
-          <div className="event-management__empty">
-            <p>No events found. Create your first event!</p>
-          </div>
-        ) : (
-          <div className="event-management__list">
-            {events.map((event) => (
-              <div key={event.id} className="event-management__item" id={`manage-event-${event.id}`}>
-                <div className="event-management__item-info">
-                  <strong className="event-management__item-name">{event.name}</strong>
-                  <span className="event-management__item-meta">
-                    {event.venue} • {event.category}
-                  </span>
-                  <span className="event-management__item-tickets">
-                    {event.ticketTypes?.length || 0} ticket type{event.ticketTypes?.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-                <div className="event-management__item-actions">
-                  <button
-                    className="event-management__action-btn event-management__action-btn--delete"
-                    onClick={() => handleDeleteEvent(event.id, event.name)}
-                    title="Delete event"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Recent Ledger Activity */}
-      <section className="ledger-section card" id="ledger-activity">
-        <h3 className="ledger-section__title">Recent Ledger Activity</h3>
-        
-        {payments.length === 0 ? (
-          <div className="ledger-section__empty">
-            <p>No transactions yet.</p>
-          </div>
-        ) : (
-          <div className="ledger-table">
-            <div className="ledger-table__header">
-              <span className="ledger-table__th ledger-table__th--id">ORDER ID</span>
-              <span className="ledger-table__th ledger-table__th--date">DATE</span>
-              <span className="ledger-table__th ledger-table__th--event">AMOUNT</span>
+        <div className="card-body p-0">
+          {loading ? (
+            <div className="d-flex align-items-center justify-content-center gap-2 py-4 text-secondary">
+              <Loader size={18} className="spin-icon" />
+              <small>Loading events...</small>
             </div>
-            
-            {payments.slice(0, 10).map((payment, index) => (
-              <div
-                key={payment.id || index}
-                className="ledger-table__row animate-slide-in"
-                style={{ animationDelay: `${index * 0.06}s` }}
-                id={`tx-row-${index}`}
-              >
-                <span className="ledger-table__td ledger-table__td--id">
-                  {payment.orderId ? payment.orderId.substring(0, 13) + '...' : '-'}
-                </span>
-                <span className="ledger-table__td ledger-table__td--date">
-                  {formatDate(payment.createdAt)}
-                </span>
-                <span className="ledger-table__td ledger-table__td--event">
-                  <span className={`ledger-table__status ledger-table__status--${
-                    payment.status === 2 || payment.status === 'Completed' ? 'success' :
-                    payment.status === 3 || payment.status === 'Failed' ? 'failed' : 'pending'
-                  }`}>
-                    ${(payment.totalAmount || 0).toFixed(2)}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+          ) : error ? (
+            <div className="d-flex align-items-center gap-2 p-3 text-danger">
+              <AlertCircle size={15} />
+              <small>{error}</small>
+            </div>
+          ) : events.length === 0 ? (
+            <p className="text-secondary text-center small py-4 mb-0">No events yet. Create your first event!</p>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th className="ps-3 small fw-semibold">EVENT</th>
+                    <th className="small fw-semibold d-none d-sm-table-cell">VENUE</th>
+                    <th className="small fw-semibold d-none d-md-table-cell">CATEGORY</th>
+                    <th className="small fw-semibold d-none d-sm-table-cell">TICKETS</th>
+                    <th className="pe-3"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {events.map((event) => (
+                    <tr key={event.id} id={`manage-event-${event.id}`}>
+                      <td className="ps-3 fw-semibold small">{event.name}</td>
+                      <td className="small text-secondary d-none d-sm-table-cell">{event.venue}</td>
+                      <td className="small text-secondary d-none d-md-table-cell">{event.category}</td>
+                      <td className="small text-secondary d-none d-sm-table-cell">
+                        {event.ticketTypes?.length || 0} type{event.ticketTypes?.length !== 1 ? 's' : ''}
+                      </td>
+                      <td className="text-end pe-3">
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleDeleteEvent(event.id, event.name)}
+                          title="Delete event"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Ledger */}
+      <div className="card mb-4" id="ledger-activity">
+        <div className="card-header">
+          <h6 className="mb-0 fw-bold">Recent Ledger Activity</h6>
+        </div>
+        <div className="card-body p-0">
+          {payments.length === 0 ? (
+            <p className="text-secondary text-center small py-4 mb-0">No transactions yet.</p>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th className="ps-3 small fw-semibold">ORDER ID</th>
+                    <th className="small fw-semibold d-none d-sm-table-cell">DATE</th>
+                    <th className="small fw-semibold text-end pe-3">AMOUNT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payments.slice(0, 10).map((payment, index) => (
+                    <tr key={payment.id || index} className="animate-slide-in" style={{ animationDelay: `${index * 0.06}s` }} id={`tx-row-${index}`}>
+                      <td className="ps-3 small" style={{ fontFamily: 'monospace' }}>
+                        {payment.orderId ? payment.orderId.substring(0, 13) + '...' : '-'}
+                      </td>
+                      <td className="small text-secondary d-none d-sm-table-cell">{formatDate(payment.createdAt)}</td>
+                      <td className="text-end pe-3">
+                        <span className={`badge ${
+                          payment.status === 2 || payment.status === 'Completed' ? 'bg-success' :
+                          payment.status === 3 || payment.status === 'Failed' ? 'bg-danger' : 'bg-warning text-dark'
+                        }`}>
+                          ${(payment.totalAmount || 0).toFixed(2)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Create Event Modal */}
       {showCreateModal && (
@@ -355,11 +365,12 @@ export default function AdminPage() {
             role="dialog"
             id="create-event-modal"
             style={{ zIndex: 1055 }}
+            data-bs-theme="dark"
           >
-            <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-              <div className="modal-content" style={{ background: '#0F0F1A', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div className="modal-content">
 
-                <div className="modal-header" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
+                <div className="modal-header">
                   <h5 className="modal-title fw-semibold">Create New Event</h5>
                   <button
                     type="button"
@@ -373,7 +384,7 @@ export default function AdminPage() {
                   <div className="mb-3">
                     <label className="form-label small text-uppercase text-secondary">Event Name</label>
                     <input
-                      className="form-control bg-dark text-white border-secondary"
+                      className="form-control"
                       placeholder="e.g. Rock Festival 2026"
                       value={newEvent.name}
                       onChange={(e) => setNewEvent((prev) => ({ ...prev, name: e.target.value }))}
@@ -383,7 +394,7 @@ export default function AdminPage() {
                   <div className="mb-3">
                     <label className="form-label small text-uppercase text-secondary">Description</label>
                     <textarea
-                      className="form-control bg-dark text-white border-secondary"
+                      className="form-control"
                       rows={3}
                       placeholder="Event description..."
                       value={newEvent.description}
@@ -395,7 +406,7 @@ export default function AdminPage() {
                     <div className="col-6">
                       <label className="form-label small text-uppercase text-secondary">Category</label>
                       <select
-                        className="form-select bg-dark text-white border-secondary"
+                        className="form-select"
                         value={newEvent.category}
                         onChange={(e) => setNewEvent((prev) => ({ ...prev, category: e.target.value }))}
                       >
@@ -417,7 +428,7 @@ export default function AdminPage() {
                         dateFormat="MMM d, yyyy HH:mm"
                         placeholderText="Select date &amp; time"
                         minDate={new Date()}
-                        className="form-control bg-dark text-white border-secondary"
+                        className="form-control"
                         wrapperClassName="w-100"
                         popperClassName="datepicker-dark"
                       />
@@ -427,7 +438,7 @@ export default function AdminPage() {
                   <div className="mb-3">
                     <label className="form-label small text-uppercase text-secondary">Venue</label>
                     <input
-                      className="form-control bg-dark text-white border-secondary"
+                      className="form-control"
                       placeholder="e.g. Central Park Arena, Istanbul"
                       value={newEvent.venue}
                       onChange={(e) => setNewEvent((prev) => ({ ...prev, venue: e.target.value }))}
@@ -437,7 +448,7 @@ export default function AdminPage() {
                   <div className="mb-3">
                     <label className="form-label small text-uppercase text-secondary">Image URL</label>
                     <input
-                      className="form-control bg-dark text-white border-secondary"
+                      className="form-control"
                       placeholder="https://picsum.photos/seed/event/800/400"
                       value={newEvent.imageUrl}
                       onChange={(e) => setNewEvent((prev) => ({ ...prev, imageUrl: e.target.value }))}
@@ -461,7 +472,7 @@ export default function AdminPage() {
                       <div key={i} className="row g-2 mb-2 align-items-center">
                         <div className="col">
                           <input
-                            className="form-control form-control-sm bg-dark text-white border-secondary"
+                            className="form-control form-control-sm"
                             placeholder="Name"
                             value={tier.name}
                             onChange={(e) => updateTicketType(i, 'name', e.target.value)}
@@ -470,7 +481,7 @@ export default function AdminPage() {
                         <div className="col-3">
                           <input
                             type="number"
-                            className="form-control form-control-sm bg-dark text-white border-secondary"
+                            className="form-control form-control-sm"
                             placeholder="Price"
                             value={tier.price}
                             onChange={(e) => updateTicketType(i, 'price', e.target.value)}
@@ -479,7 +490,7 @@ export default function AdminPage() {
                         <div className="col-3">
                           <input
                             type="number"
-                            className="form-control form-control-sm bg-dark text-white border-secondary"
+                            className="form-control form-control-sm"
                             placeholder="Qty"
                             value={tier.availableQuantity}
                             onChange={(e) => updateTicketType(i, 'availableQuantity', e.target.value)}
@@ -501,7 +512,7 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div className="modal-footer" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
+                <div className="modal-footer">
                   <button
                     type="button"
                     className="btn btn-outline-secondary"

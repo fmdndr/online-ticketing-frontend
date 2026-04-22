@@ -50,20 +50,23 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="orders-page container-fluid">
+    <div className="orders-page container-fluid py-4">
       {/* Hero */}
-      <section className="orders-hero" id="orders-hero">
-        <h1 className="orders-hero__title">MY ORDERS</h1>
-        <p className="orders-hero__desc">
-          Track your ticket purchases and transaction history.
-        </p>
-      </section>
+      <div className="mb-4">
+        <h2 className="fw-black mb-1">MY ORDERS</h2>
+        <p className="text-secondary small mb-0">Track your ticket purchases and transaction history.</p>
+      </div>
 
       {/* Loading */}
       {loading && (
-        <div className="orders-loading">
+        <div className="row g-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="order-skeleton shimmer" />
+            <div key={i} className="col-12 col-md-6 col-lg-4">
+              <div className="card">
+                <div className="card-header"><div className="placeholder-glow"><span className="placeholder col-6"></span></div></div>
+                <div className="card-body"><div className="placeholder-glow"><span className="placeholder col-8 d-block mb-2"></span><span className="placeholder col-4 d-block"></span></div></div>
+              </div>
+            </div>
           ))}
         </div>
       )}
@@ -81,82 +84,75 @@ export default function OrdersPage() {
 
       {/* Empty State */}
       {!loading && !error && payments.length === 0 && (
-        <div className="orders-empty" id="orders-empty">
-          <div className="orders-empty__icon">
-            <ShoppingBag size={32} />
+        <div className="text-center py-5" id="orders-empty">
+          <div className="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-4 mb-3">
+            <ShoppingBag size={32} className="text-primary" />
           </div>
-          <h3 className="orders-empty__title">No Orders Yet</h3>
-          <p className="orders-empty__text">
-            When you purchase tickets, your order history will appear here.
-          </p>
-          <Link to="/" className="btn btn-primary orders-empty__btn">
+          <h5 className="fw-bold mb-2">No Orders Yet</h5>
+          <p className="text-secondary small mb-4">When you purchase tickets, your order history will appear here.</p>
+          <Link to="/" className="btn btn-primary d-inline-flex align-items-center gap-2">
             Browse Events <ArrowRight size={16} />
           </Link>
         </div>
       )}
 
-      {/* Orders List */}
+      {/* Orders Grid */}
       {!loading && !error && payments.length > 0 && (
-        <section className="orders-list" id="orders-list">
+        <div className="row g-3" id="orders-list">
           {payments.map((payment, index) => {
             const status = getStatusInfo(payment.status);
             const StatusIcon = status.icon;
-
             return (
-              <div
-                key={payment.id}
-                className="order-card card animate-fade-in-up"
-                style={{ animationDelay: `${index * 0.08}s` }}
-                id={`order-card-${index}`}
-              >
-                <div className="order-card__header">
-                  <div className="order-card__icon">
-                    <Ticket size={18} />
-                  </div>
-                  <div className="order-card__header-info">
-                    <span className="order-card__ticket-type">{payment.ticketTypeName}</span>
-                    <span className="order-card__order-id">
-                      {payment.orderId ? payment.orderId.substring(0, 8) + '...' : '-'}
+              <div key={payment.id} className="col-12 col-md-6 col-lg-4">
+                <div
+                  className="card h-100 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.08}s` }}
+                  id={`order-card-${index}`}
+                >
+                  <div className="card-header d-flex align-items-center gap-3">
+                    <div className="rounded-2 p-2 bg-primary bg-opacity-10 d-inline-flex flex-shrink-0">
+                      <Ticket size={16} className="text-primary" />
+                    </div>
+                    <div className="flex-grow-1 overflow-hidden">
+                      <div className="fw-semibold small text-truncate">{payment.ticketTypeName}</div>
+                      <div className="text-secondary" style={{ fontSize: '0.65rem', fontFamily: 'monospace' }}>
+                        {payment.orderId ? payment.orderId.substring(0, 8) + '...' : '-'}
+                      </div>
+                    </div>
+                    <span className={`badge d-inline-flex align-items-center gap-1 flex-shrink-0 ${status.badgeClass}`}>
+                      <StatusIcon size={11} />
+                      {status.label}
                     </span>
                   </div>
-                  <span className={`badge d-inline-flex align-items-center gap-1 ${status.badgeClass}`}>
-                    <StatusIcon size={11} />
-                    {status.label}
-                  </span>
-                </div>
-
-                <div className="order-card__details">
-                  <div className="order-card__detail">
-                    <span className="order-card__detail-label">QUANTITY</span>
-                    <span className="order-card__detail-value">{payment.quantity} ticket{payment.quantity !== 1 ? 's' : ''}</span>
+                  <div className="card-body">
+                    <div className="row g-2">
+                      <div className="col-6">
+                        <p className="text-secondary mb-1" style={{ fontSize: '0.63rem', letterSpacing: '0.5px', fontWeight: 600 }}>QUANTITY</p>
+                        <p className="fw-semibold small mb-0">{payment.quantity} ticket{payment.quantity !== 1 ? 's' : ''}</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="text-secondary mb-1" style={{ fontSize: '0.63rem', letterSpacing: '0.5px', fontWeight: 600 }}>TOTAL</p>
+                        <p className="fw-bold small mb-0 text-primary">${(payment.totalAmount || 0).toFixed(2)}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="order-card__detail">
-                    <span className="order-card__detail-label">TOTAL</span>
-                    <span className="order-card__detail-value order-card__detail-value--price">
-                      ${(payment.totalAmount || 0).toFixed(2)}
-                    </span>
+                  <div className="card-footer d-flex justify-content-between align-items-center">
+                    <small className="text-secondary">{formatDate(payment.createdAt)}</small>
+                    {payment.completedAt && (
+                      <small className="text-success">✓ {formatDate(payment.completedAt)}</small>
+                    )}
                   </div>
-                </div>
-
-                <div className="order-card__footer">
-                  <span className="order-card__date">{formatDate(payment.createdAt)}</span>
-                  {payment.completedAt && (
-                    <span className="order-card__completed">
-                      Completed: {formatDate(payment.completedAt)}
-                    </span>
+                  {payment.failureReason && (
+                    <div className="card-footer border-top-0 pt-0 text-danger d-flex align-items-center gap-1">
+                      <AlertCircle size={12} />
+                      <small>{payment.failureReason}</small>
+                    </div>
                   )}
                 </div>
-
-                {payment.failureReason && (
-                  <div className="order-card__failure">
-                    <AlertCircle size={12} />
-                    <span>{payment.failureReason}</span>
-                  </div>
-                )}
               </div>
             );
           })}
-        </section>
+        </div>
       )}
     </div>
   );

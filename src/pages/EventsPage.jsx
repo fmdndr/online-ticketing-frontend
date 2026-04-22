@@ -116,15 +116,16 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* Loading State */}
+      {/* Loading */}
       {loading && (
-        <div className="events-loading" id="events-loading">
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 mb-4" id="events-loading">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="event-skeleton">
-              <div className="event-skeleton__image shimmer" />
-              <div className="event-skeleton__info">
-                <div className="event-skeleton__title shimmer" />
-                <div className="event-skeleton__venue shimmer" />
+            <div key={i} className="col">
+              <div className="card h-100">
+                <div className="placeholder-glow">
+                  <div className="placeholder w-100" style={{ height: '180px', borderRadius: 'var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0' }} />
+                </div>
+                <div className="card-body"><div className="placeholder-glow"><span className="placeholder col-8 d-block mb-2"></span><span className="placeholder col-5 d-block"></span></div></div>
               </div>
             </div>
           ))}
@@ -144,66 +145,58 @@ export default function EventsPage() {
 
       {/* Event Cards */}
       {!loading && !error && (
-        <section className="events-list" id="events-list">
+        <>
           {filteredEvents.length === 0 && (
-            <div className="events-empty">
-              <p>No events found matching your criteria.</p>
-            </div>
+            <div className="text-center py-5"><p className="text-secondary">No events found matching your criteria.</p></div>
           )}
-          {filteredEvents.map((event, index) => (
-            <Link
-              to={`/event/${event.id}`}
-              key={event.id}
-              className="event-card animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.08}s` }}
-              id={`event-card-${event.id}`}
-            >
-              <div className="event-card__image-wrap">
-                <img
-                  src={event.imageUrl || '/placeholder-event.jpg'}
-                  alt={event.name}
-                  className="event-card__image"
-                  onError={(e) => {
-                    e.target.style.background = 'var(--gradient-primary)';
-                    e.target.style.minHeight = '180px';
-                  }}
-                />
-                {isSoldOut(event.ticketTypes) ? (
-                  <span className="event-card__badge event-card__badge--soldout">SOLD OUT</span>
-                ) : getMinPrice(event.ticketTypes) ? (
-                  <span className="event-card__badge event-card__badge--price">{getMinPrice(event.ticketTypes)}</span>
-                ) : null}
-              </div>
-              <div className="event-card__info">
-                <div className="event-card__details">
-                  <h3 className="event-card__title">{event.name?.toUpperCase()}</h3>
-                  <div className="event-card__venue">
-                    <MapPin size={12} />
-                    <span>{event.venue}</span>
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 mb-4" id="events-list">
+            {filteredEvents.map((event, index) => (
+              <div key={event.id} className="col">
+                <Link to={`/event/${event.id}`} className="text-decoration-none" id={`event-card-${event.id}`}>
+                  <div className="card h-100 animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s` }}>
+                    <div className="position-relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                      <img
+                        src={event.imageUrl || '/placeholder-event.jpg'}
+                        alt={event.name}
+                        className="w-100 h-100"
+                        style={{ objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                        onError={(e) => { e.target.style.background = 'var(--gradient-primary)'; e.target.style.minHeight = '180px'; }}
+                      />
+                      {isSoldOut(event.ticketTypes) ? (
+                        <span className="position-absolute top-0 start-0 m-2 badge bg-danger">SOLD OUT</span>
+                      ) : getMinPrice(event.ticketTypes) ? (
+                        <span className="position-absolute top-0 start-0 m-2 badge bg-primary">{getMinPrice(event.ticketTypes)}</span>
+                      ) : null}
+                    </div>
+                    <div className="card-body pb-2">
+                      <h6 className="card-title fw-bold small mb-1">{event.name?.toUpperCase()}</h6>
+                      <div className="d-flex align-items-center gap-1 text-secondary">
+                        <MapPin size={11} />
+                        <small className="text-truncate">{event.venue}</small>
+                      </div>
+                    </div>
+                    <div className="card-footer d-flex justify-content-end py-2">
+                      <span className="badge bg-primary">{formatDate(event.date)}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="event-card__date">
-                  <span className="event-card__date-text">{formatDate(event.date)}</span>
-                </div>
+                </Link>
               </div>
-            </Link>
-          ))}
-        </section>
+            ))}
+          </div>
+        </>
       )}
 
-      {/* Discover More Section */}
-      <section className="discover-section" id="discover-section">
-        <div className="discover-section__image-wrap">
-          <img src={discoverCurtain} alt="Discover more events" className="discover-section__image" />
+      {/* Discover More */}
+      <div className="card mb-4 overflow-hidden" id="discover-section">
+        <img src={discoverCurtain} alt="Discover more events" className="card-img" style={{ height: '200px', objectFit: 'cover', opacity: 0.7 }} />
+        <div className="card-img-overlay d-flex flex-column justify-content-center text-white">
+          <h3 className="fw-black mb-2">DISCOVER MORE EVENTS</h3>
+          <p className="small mb-0">Explore thousands of live events across music, sports, and arts. New tickets released daily.</p>
+          <div className="mt-3">
+            <button className="btn btn-light btn-sm" id="load-more-btn">Load More</button>
+          </div>
         </div>
-        <h2 className="discover-section__title">DISCOVER MORE EVENTS</h2>
-        <p className="discover-section__text">
-          Explore thousands of live events across music, sports, and arts. New tickets released daily.
-        </p>
-        <button className="btn btn-outline discover-section__btn" id="load-more-btn">
-          Load More
-        </button>
-      </section>
+      </div>
 
       {/* FAB */}
       <button className="events-fab" id="events-fab">
