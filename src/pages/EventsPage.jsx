@@ -69,7 +69,7 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="events-page container">
+    <div className="events-page container-fluid">
       {/* Hero Section */}
       <section className="events-hero" id="events-hero">
         <div className="events-hero__top">

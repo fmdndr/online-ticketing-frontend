@@ -50,7 +50,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="orders-page container">
+    <div className="orders-page container-fluid">
       {/* Hero */}
       <section className="orders-hero" id="orders-hero">
         <h1 className="orders-hero__title">MY ORDERS</h1>

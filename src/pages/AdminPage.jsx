@@ -152,7 +152,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="admin-page container">
+    <div className="admin-page container-fluid">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
       {/* Sales Velocity Hero */}
       <section className="admin-hero" id="admin-hero">

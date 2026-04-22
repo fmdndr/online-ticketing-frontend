@@ -124,7 +124,7 @@ export default function EventDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="detail-page container">
+      <div className="detail-page container-fluid">
         <div className="breadcrumb">
           <Link to="/">← Back to Events</Link>
         </div>
@@ -144,7 +144,7 @@ export default function EventDetailPage() {
   // Error state
   if (error) {
     return (
-      <div className="detail-page container">
+      <div className="detail-page container-fluid">
         <div className="breadcrumb">
           <Link to="/">← Back to Events</Link>
         </div>
@@ -169,7 +169,7 @@ export default function EventDetailPage() {
     : '';
 
   return (
-    <div className="detail-page container">
+    <div className="detail-page container-fluid">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
       <div className="breadcrumb">
         <Link to="/">← Back to Events</Link>
