@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Minus, Plus, Clock, TrendingUp, ArrowRight, Loader, AlertCircle } from 'lucide-react';
 import { getEventById, updateBasket, USER_ID } from '../services/api';
@@ -16,18 +16,7 @@ export default function EventDetailPage() {
   const [addingToCart, setAddingToCart] = useState(false);
   const [cartError, setCartError] = useState(null);
 
-  useEffect(() => {
-    fetchEvent();
-  }, [id]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const fetchEvent = async () => {
+  const fetchEvent = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -38,7 +27,18 @@ export default function EventDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchEvent();
+  }, [fetchEvent]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');

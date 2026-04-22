@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { CreditCard, Mail, Shield, Lock, ChevronRight, Truck, Headphones, Clock, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { getBasket, checkout, USER_ID } from '../services/api';
@@ -24,18 +24,7 @@ export default function PaymentPage() {
   const [checkoutResult, setCheckoutResult] = useState(null); // 'success' | 'error'
   const [checkoutMessage, setCheckoutMessage] = useState('');
 
-  useEffect(() => {
-    loadBasketData();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadBasketData = async () => {
+  const loadBasketData = useCallback(async () => {
     // Try to get data from navigation state first
     if (location.state?.items) {
       setBasketItems(location.state.items);
@@ -54,7 +43,18 @@ export default function PaymentPage() {
     } catch {
       // Basket may not exist yet
     }
-  };
+  }, [location]);
+
+  useEffect(() => {
+    loadBasketData();
+  }, [loadBasketData]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const formatTimer = (s) => {
     const m = Math.floor(s / 60).toString().padStart(2, '0');

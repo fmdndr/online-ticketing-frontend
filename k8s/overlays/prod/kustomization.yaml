@@ -81,3 +81,19 @@ patches:
         path: /spec/template/metadata/annotations
         value:
           cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+
+  # ============================================================================
+  # Static IP — eliminates the ephemeral pod IP problem
+  # ============================================================================
+  # IMPORTANT: 10.43.38.174 must be inside your cluster's service CIDR
+  # (k3s default: 10.43.0.0/16) and must not already be in use.
+  # If the Service already exists with a different clusterIP, delete it first:
+  #   kubectl delete svc online-ticketing-web -n online-ticketing-frontend
+  # ============================================================================
+  - target:
+      kind: Service
+      name: online-ticketing-web
+    patch: |
+      - op: add
+        path: /spec/clusterIP
+        value: "10.43.38.174"

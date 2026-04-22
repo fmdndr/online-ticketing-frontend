@@ -89,9 +89,20 @@ pipeline {
             set -euo pipefail
 
             if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
-              echo "✅ Node already installed on agent: $(node -v) / npm $(npm -v)"
-              echo "NODE_HOME=" > node.env
-              exit 0
+              NODE_VER=$(node -v | sed 's/v//')
+              MAJOR=$(echo "$NODE_VER" | cut -d. -f1)
+              MINOR=$(echo "$NODE_VER" | cut -d. -f2)
+              VERSION_OK=0
+              # Vite 8 requires Node.js >=20.19 or >=22.12
+              if [ "$MAJOR" -eq 20 ] && [ "$MINOR" -ge 19 ]; then VERSION_OK=1; fi
+              if [ "$MAJOR" -eq 22 ] && [ "$MINOR" -ge 12 ]; then VERSION_OK=1; fi
+              if [ "$MAJOR" -gt 22 ]; then VERSION_OK=1; fi
+              if [ "$VERSION_OK" -eq 1 ]; then
+                echo "✅ Node $(node -v) satisfies Vite 8 requirements."
+                echo "NODE_HOME=" > node.env
+                exit 0
+              fi
+              echo "⚠️ Node $(node -v) does not meet Vite 8 requirements (>=20.19 or >=22.12). Installing v${NODE_VERSION_E}..."
             fi
 
             echo "⚠️ Node is missing on this agent. Installing Node.js v${NODE_VERSION_E} into WORKSPACE cache..."
