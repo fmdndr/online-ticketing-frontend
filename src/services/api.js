@@ -1,5 +1,5 @@
 /**
- * KINETIC Ticketing — API Service Layer
+ * Socratic Event — API Service Layer
  * Routes through nginx /api proxy → https://prod.socratic-event.com/api
  *
  * Backend wraps all responses in ApiResponse<T>: { isSuccess, message, data }

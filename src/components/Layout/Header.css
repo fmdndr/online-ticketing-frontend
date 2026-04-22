@@ -19,14 +19,10 @@
 }
 
 .header__logo-icon {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
-  background: var(--gradient-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+  object-fit: contain;
 }
 
 .header__logo-text {

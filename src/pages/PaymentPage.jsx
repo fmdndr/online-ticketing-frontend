@@ -118,7 +118,7 @@ export default function PaymentPage() {
   };
 
   // Generate transaction ID
-  const txId = `KNTC-${Math.floor(1000 + Math.random() * 9000)}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}IX`;
+  const txId = `SRTE-${Math.floor(1000 + Math.random() * 9000)}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}IX`;
 
   const eventName = eventInfo?.name || basketItems[0]?.eventName || 'Event';
   const eventVenue = eventInfo?.venue || 'Venue';
@@ -176,7 +176,7 @@ export default function PaymentPage() {
           <input
             type="text"
             className="form-control bg-dark text-white border-secondary"
-            placeholder="ALEXANDER KINETIC"
+            placeholder="ALEXANDER SOCRATIC"
             value={cardName}
             onChange={(e) => setCardName(e.target.value.toUpperCase())}
             id="cardholder-name"
@@ -382,7 +382,7 @@ export default function PaymentPage() {
           <a href="#">Privacy Policy</a>
           <a href="#">Anti-Scalper Policy</a>
         </div>
-        <p className="payment-footer__copy">© 2026 KINETIC TICKETING SYSTEMS INC.</p>
+        <p className="payment-footer__copy">© 2026 SOCRATIC EVENT INC.</p>
       </footer>
     </div>
   );

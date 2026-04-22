@@ -1,5 +1,4 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Zap } from 'lucide-react';
 import './Header.css';
 
 export default function Header() {
@@ -13,10 +12,8 @@ export default function Header() {
   return (
     <header className="header" id="main-header">
       <Link to="/" className="header__logo" id="header-logo">
-        <div className="header__logo-icon">
-          <Zap size={18} fill="white" />
-        </div>
-        <span className="header__logo-text">KINETIC</span>
+        <img src="/socratic-event-icon.png" alt="Socratic Event" className="header__logo-icon" />
+        <span className="header__logo-text">Socratic Event</span>
       </Link>
 
       <div className="header__actions">
