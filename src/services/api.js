@@ -4,6 +4,21 @@ import axios from 'axios';
 
 export const getUserId = () => localStorage.getItem('user_id');
 
+export const getUserRole = () => {
+  const token = localStorage.getItem('auth_token');
+  if (!token) return null;
+  try {
+    const payloadBase64 = token.split('.')[1];
+    if (!payloadBase64) return null;
+    const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+    const payload = JSON.parse(payloadJson);
+    return payload.role;
+  } catch (e) {
+    console.error('Failed to parse JWT', e);
+    return null;
+  }
+};
+
 const api = axios.create({
   baseURL: '/api',
   headers: { 'Content-Type': 'application/json' },

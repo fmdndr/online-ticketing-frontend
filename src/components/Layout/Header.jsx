@@ -1,14 +1,20 @@
 import { Link, NavLink } from 'react-router-dom';
 import { User, Bell, ShoppingBag } from 'lucide-react';
+import { getUserRole } from '../../services/api';
 
 export default function Header() {
   const isAuthenticated = !!localStorage.getItem('auth_token');
+  const role = getUserRole();
+  const isAdmin = role === 'Admin';
 
   const tabs = [
     { to: '/', label: 'Events' },
     ...(isAuthenticated ? [
       { to: '/orders', label: 'Orders' },
       { to: '/account', label: 'Account' },
+    ] : []),
+    ...(isAdmin ? [
+      { to: '/admin', label: 'Admin' },
     ] : []),
   ];
 
