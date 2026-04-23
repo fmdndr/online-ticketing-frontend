@@ -13,7 +13,6 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Create event modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [creating, setCreating] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -49,7 +48,6 @@ export default function AdminPage() {
     }
   };
 
-  // Format date for display
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
@@ -57,7 +55,6 @@ export default function AdminPage() {
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
   };
 
-  // Stats from real data
   const totalRevenue = payments
     .filter((p) => p.status === 2 || p.status === 'Completed')
     .reduce((sum, p) => sum + (p.totalAmount || 0), 0);
@@ -65,7 +62,6 @@ export default function AdminPage() {
   const completedPayments = payments.filter((p) => p.status === 2 || p.status === 'Completed').length;
   const successRate = totalTransactions > 0 ? ((completedPayments / totalTransactions) * 100).toFixed(1) : '0.0';
 
-  // Build chart from payment timestamps
   const paymentChartData = payments.length > 0
     ? (() => {
         const hourMap = {};
@@ -80,7 +76,6 @@ export default function AdminPage() {
       })()
     : trendChartData;
 
-  // Event name lookup for payments
   const eventNameMap = {};
   events.forEach((e) => {
     eventNameMap[e.id] = e.name;
@@ -154,13 +149,13 @@ export default function AdminPage() {
     <div className="admin-page container-fluid py-4">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Hero */}
+
       <div className="mb-4">
         <h2 className="fw-black mb-1">Sales Velocity</h2>
         <p className="text-secondary small mb-0">Real-time throughput monitoring for live event distribution channels.</p>
       </div>
 
-      {/* Stats Row */}
+
       <div className="row g-3 mb-4">
         <div className="col-4">
           <div className="card text-center h-100">
@@ -197,7 +192,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Chart + Peak side by side */}
+
       <div className="row g-3 mb-4">
         <div className="col-md-8">
           <div className="card h-100">
@@ -249,7 +244,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Event Management */}
+
       <div className="card mb-4" id="event-management">
         <div className="card-header d-flex justify-content-between align-items-center">
           <h6 className="mb-0 fw-bold">Event Management</h6>
@@ -313,7 +308,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Ledger */}
+
       <div className="card mb-4" id="ledger-activity">
         <div className="card-header">
           <h6 className="mb-0 fw-bold">Recent Ledger Activity</h6>
@@ -355,7 +350,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Create Event Modal */}
+
       {showCreateModal && (
         <>
           <div
@@ -454,7 +449,7 @@ export default function AdminPage() {
                     />
                   </div>
 
-                  {/* Ticket Types */}
+
                   <div className="mb-2">
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <label className="form-label small text-uppercase text-secondary mb-0">Ticket Types</label>

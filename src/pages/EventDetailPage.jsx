@@ -102,7 +102,6 @@ export default function EventDetailPage() {
         items,
       });
 
-      // Navigate to payment with basket context
       navigate('/payment', {
         state: {
           event,
@@ -117,7 +116,6 @@ export default function EventDetailPage() {
     }
   };
 
-  // Seat map sections
   const seatSections = [
     { id: 1, x: 20, y: 60, w: 40, h: 25, available: true },
     { id: 2, x: 70, y: 60, w: 40, h: 25, available: true },
@@ -155,7 +153,7 @@ export default function EventDetailPage() {
     <div className="min-h-screen bg-surface pb-16">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Floating Queue Status Bar */}
+
       <div className="bg-tertiary-container text-on-tertiary-fixed py-2 px-6 flex justify-center md:justify-between items-center font-mono text-sm sticky top-0 z-50 shadow-ambient">
         <span className="hidden md:inline font-bold">HIGH DEMAND TICKET POOL</span>
         <div className="flex gap-4 items-center">
@@ -165,7 +163,7 @@ export default function EventDetailPage() {
         </div>
       </div>
 
-      {/* Hero Banner */}
+
       <div className="relative h-64 md:h-96 w-full">
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         <img
@@ -185,9 +183,9 @@ export default function EventDetailPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Main Workspace (Base -> Intermediate Shift) */}
+
         <div className="lg:col-span-8 space-y-8">
-          
+
           {event?.description && (
              <section className="bg-surface-container-low p-8 rounded">
                 <p className="text-on-surface-variant font-retina leading-relaxed">{event.description}</p>
@@ -196,14 +194,14 @@ export default function EventDetailPage() {
 
           <section className="bg-surface-container-low p-8 md:p-12 rounded">
              <h2 className="text-3xl font-extrabold tracking-tightest mb-8 text-on-surface uppercase">Select Your Section</h2>
-             
-             {/* Complex Seat Map needing Ghost Border (outline-variant 15%) */}
+
+
              <div className="aspect-video bg-surface-container-lowest rounded border border-outline-variant/15 flex items-center justify-center relative shadow-ambient overflow-hidden p-4">
                 <svg viewBox="0 0 230 140" className="w-full h-full max-h-[400px]">
                     <rect x="60" y="10" width="110" height="35" rx="6" fill="var(--color-surface-container-highest)" stroke="var(--color-outline-variant)" strokeWidth="1.5" strokeOpacity="0.15" />
                     <text x="115" y="32" textAnchor="middle" fill="currentColor" fontSize="10" fontWeight="700" letterSpacing="2" className="text-on-surface-variant font-sans">STAGE</text>
-                    
-                    {/* Seat Sections */}
+
+
                     {seatSections.map((sec) => (
                       <g key={sec.id}>
                         <rect
@@ -224,11 +222,11 @@ export default function EventDetailPage() {
           </section>
         </div>
 
-        {/* Action Sidebar (Highest Elevation Layering) */}
+
         <aside className="lg:col-span-4 space-y-6">
           <div className="bg-surface-container-lowest p-8 rounded shadow-ambient sticky top-24">
             <h3 className="text-2xl font-extrabold tracking-tightest mb-6 text-on-surface uppercase">Ticket Tiers</h3>
-            
+
             <div className="space-y-4">
               {ticketTypes.map((tier) => (
                 <div key={tier.name} className="p-4 bg-surface-container-low rounded border border-transparent hover:border-outline-variant/15 transition-colors">
@@ -247,7 +245,7 @@ export default function EventDetailPage() {
                       <span className="text-on-surface-variant ms-1 text-xs">+ FEES</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between mt-4">
                     <span className="text-xs font-bold text-on-surface-variant tracking-wider uppercase">Quantity</span>
                     <div className="flex items-center bg-surface-container-high rounded p-1">
@@ -279,8 +277,8 @@ export default function EventDetailPage() {
               <span className="font-mono text-3xl font-bold text-on-surface">${subtotal.toFixed(2)}</span>
             </div>
 
-            <Button 
-              className="w-full text-lg py-4 flex items-center gap-2" 
+            <Button
+              className="w-full text-lg py-4 flex items-center gap-2"
               onClick={handleSecureTickets}
               disabled={totalTickets === 0 || addingToCart}
             >

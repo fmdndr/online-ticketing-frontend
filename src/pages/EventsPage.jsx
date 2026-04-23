@@ -64,10 +64,10 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-surface pb-16">
-      {/* Glass & Gradient: Sticky Header is now assumed to be in the Layout component, but we can put category and search here */}
+
       <main className="max-w-7xl mx-auto px-6 pt-12 md:pt-20">
-        
-        {/* Asymmetrical Header Layout */}
+
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tightest text-on-surface max-w-2xl leading-tight uppercase">
             LIVE <br/> EXPERIENCES
@@ -77,9 +77,9 @@ export default function EventsPage() {
                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
                  <Search size={18} />
                </span>
-               <input 
-                 type="text" 
-                 placeholder="Search artists, venues, or cities..." 
+               <input
+                 type="text"
+                 placeholder="Search artists, venues, or cities..."
                  className="w-full md:w-80 pl-10 pr-4 py-3 bg-surface-container-high rounded text-on-surface placeholder-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-[2px] focus:ring-primary/20 transition-all"
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
@@ -88,15 +88,15 @@ export default function EventsPage() {
           </div>
         </div>
 
-        {/* Categories */}
+
         <div className="flex flex-wrap gap-2 mb-12">
           {uniqueCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-full text-sm font-bold tracking-wider transition-colors ${
-                activeCategory === cat 
-                  ? 'bg-primary text-on-primary' 
+                activeCategory === cat
+                  ? 'bg-primary text-on-primary'
                   : 'bg-surface-container-low text-on-surface hover:bg-surface-container-high'
               }`}
             >
@@ -105,7 +105,7 @@ export default function EventsPage() {
           ))}
         </div>
 
-        {/* Content States */}
+
         {loading && <EventGridSkeleton />}
 
         {error && !loading && (
@@ -120,11 +120,11 @@ export default function EventsPage() {
 
         {!loading && !error && filteredEvents.length > 0 && (
           <>
-            {/* Editorial Cards (No borders, gap-y-12, tonal hover) */}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8 mb-16">
               {filteredEvents.map((event) => (
                 <Link to={`/event/${event.id}`} key={event.id} className="group flex flex-col p-4 -m-4 rounded hover:bg-surface-container-high transition-colors cursor-pointer outline-none focus:ring-[2px] focus:ring-primary/20">
-                  {/* Image Container with Ambient lift */}
+
                   <div className="aspect-[4/3] bg-surface-container-lowest rounded overflow-hidden mb-6 relative shadow-ambient">
                      <img
                         src={event.imageUrl || '/placeholder-event.jpg'}
@@ -147,7 +147,7 @@ export default function EventsPage() {
               ))}
             </div>
 
-            {/* Discover More */}
+
             <div className="relative rounded overflow-hidden shadow-ambient bg-surface-container-lowest">
               <img src={discoverCurtain} alt="Discover more events" className="w-full h-64 object-cover opacity-70" />
               <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent flex flex-col justify-end p-8 md:p-12 text-on-surface">

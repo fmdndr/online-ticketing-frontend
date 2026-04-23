@@ -23,7 +23,6 @@ export default function OrdersPage() {
     }
     fetchOrders();
 
-    // Auto-refresh once after 2.5 seconds to handle Kafka eventual consistency delays
     const timer = setTimeout(() => {
       fetchOrders(true);
     }, 2500);
@@ -34,7 +33,7 @@ export default function OrdersPage() {
   const fetchOrders = async (isSilent = false) => {
     if (!isSilent) setLoading(true);
     else setRefreshing(true);
-    
+
     setError(null);
     try {
       const data = await getPaymentsByUserId();
@@ -81,8 +80,8 @@ export default function OrdersPage() {
               Track your ticket purchases and transaction history.
             </p>
           </div>
-          <button 
-            onClick={() => fetchOrders(true)} 
+          <button
+            onClick={() => fetchOrders(true)}
             disabled={refreshing || loading}
             className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
           >
@@ -105,13 +104,13 @@ export default function OrdersPage() {
 
         {!loading && !error && payments.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {payments.map((payment, index) => {
+            {payments.map((payment) => {
               const status = getStatusInfo(payment.status);
               const StatusIcon = status.icon;
               return (
-                <Link 
+                <Link
                   to={`/orders/${payment.orderId}`}
-                  key={payment.id} 
+                  key={payment.id}
                   className="bg-surface-container-lowest rounded shadow-ambient border border-outline-variant/15 overflow-hidden flex flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-primary/10 hover:-translate-y-1 block cursor-pointer"
                 >
                   <div className="bg-surface-container-low p-4 flex items-center justify-between border-b border-outline-variant/15">
@@ -131,7 +130,7 @@ export default function OrdersPage() {
                       {status.label}
                     </Badge>
                   </div>
-                  
+
                   <div className="p-6 flex-grow flex justify-between items-center">
                     <div>
                       <div className="text-xs font-bold tracking-wider text-on-surface-variant uppercase mb-1">Quantity</div>

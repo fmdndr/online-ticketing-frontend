@@ -1,15 +1,8 @@
-/**
- * Socratic Event — API Service Layer
- * Routes through nginx /api proxy → https://prod.socratic-event.com/api
- *
- * Backend wraps all responses in ApiResponse<T>: { isSuccess, message, data }
- */
+
 
 import axios from 'axios';
 
 export const getUserId = () => localStorage.getItem('user_id');
-
-// ─── Axios instance ───────────────────────────────────────────────────────────
 
 const api = axios.create({
   baseURL: '/api',
@@ -23,8 +16,6 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
-
-// ─── Response interceptor — unwrap ApiResponse<T> and normalise errors ────────
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -42,12 +33,11 @@ const processQueue = (error, token = null) => {
 
 api.interceptors.response.use(
   (response) => {
-    // 204 No Content
+
     if (response.status === 204) return null;
 
     const json = response.data;
 
-    // Unwrap ApiResponse<T> envelope
     if (json && typeof json.isSuccess !== 'undefined') {
       if (!json.isSuccess) {
         return Promise.reject(new Error(json.message || 'Operation failed'));
@@ -60,7 +50,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Trigger silent refresh on 401, but exclude the refresh endpoint to prevent loops
     if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/identity/refresh') {
       if (isRefreshing) {
         try {
@@ -81,16 +70,15 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem('refresh_token');
         if (!refreshToken) throw new Error('No refresh token available');
 
-        // Bypass 'api' interceptors for the refresh request using a clean axios instance
         const response = await axios.post('/api/identity/refresh', { refreshToken }, {
           headers: { 'Content-Type': 'application/json' }
         });
-        
+
         const body = response.data;
         if (!body || !body.isSuccess) throw new Error('Refresh failed');
 
         const { accessToken, refreshToken: newRefreshToken, userId } = body.data;
-        
+
         localStorage.setItem('auth_token', accessToken);
         localStorage.setItem('refresh_token', newRefreshToken);
         if (userId) localStorage.setItem('user_id', userId);
@@ -99,16 +87,16 @@ api.interceptors.response.use(
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
-        
+
       } catch (err) {
         processQueue(err, null);
-        
+
         localStorage.removeItem('auth_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user_id');
-        
+
         window.location.href = '/login';
-        
+
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
@@ -122,8 +110,6 @@ api.interceptors.response.use(
     return Promise.reject(new Error(errorMessage));
   }
 );
-
-// ─── Catalog Service ─────────────────────────────────────────────────────────
 
 export async function getEvents() {
   return api.get('/catalog');
@@ -149,8 +135,6 @@ export async function deleteEvent(id) {
   return api.delete(`/catalog/${id}`);
 }
 
-// ─── Basket Service ──────────────────────────────────────────────────────────
-
 export async function getBasket(userId = getUserId()) {
   return api.get(`/basket/${userId}`);
 }
@@ -167,8 +151,6 @@ export async function checkout(checkoutData) {
   return api.post('/basket/checkout', checkoutData);
 }
 
-// ─── Payment Service ─────────────────────────────────────────────────────────
-
 export async function getPayments() {
   return api.get('/payment');
 }
@@ -180,7 +162,6 @@ export async function getPaymentByOrderId(orderId) {
 export async function getPaymentsByUserId(userId = getUserId()) {
   return api.get(`/payment/user/${userId}`);
 }
-// ─── Identity Service ────────────────────────────────────────────────────────
 
 export async function loginUser(email, password) {
   return api.post('/identity/login', { email, password });

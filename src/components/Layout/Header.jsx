@@ -15,8 +15,8 @@ export default function Header() {
   return (
     <header className="fixed top-0 w-full z-[100] bg-surface/80 backdrop-blur-glass border-b border-outline-variant/15 transition-all">
       <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-        
-        {/* Logo */}
+
+
         <Link to="/" className="flex items-center gap-3 group">
           <img src="/socratic-event-icon.png" alt="Socratic Event" className="w-8 h-8 object-contain" />
           <span className="text-xl font-extrabold tracking-tightest text-on-surface">
@@ -24,7 +24,7 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Navigation */}
+
         <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {tabs.map(({ to, label }) => (
             <NavLink
@@ -41,7 +41,7 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Actions */}
+
         <div className="flex items-center gap-3">
           <div className="hidden md:flex font-mono text-xs text-on-surface-variant bg-surface-container-low px-2 py-1 rounded mr-2 border border-outline-variant/15">
             SYS_ONLINE

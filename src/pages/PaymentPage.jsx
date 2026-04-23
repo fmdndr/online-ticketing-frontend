@@ -17,12 +17,10 @@ export default function PaymentPage() {
   const [saveCard, setSaveCard] = useState(false);
   const [timer, setTimer] = useState(292); // 04:52 starting time
 
-  // Basket data
   const [basketItems, setBasketItems] = useState([]);
   const [eventInfo, setEventInfo] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  // Checkout state
   const [processing, setProcessing] = useState(false);
   const [checkoutResult, setCheckoutResult] = useState(null); // 'success' | 'error'
   const [checkoutMessage, setCheckoutMessage] = useState('');
@@ -40,8 +38,8 @@ export default function PaymentPage() {
         setBasketItems(basket.items);
         setTotalPrice(basket.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0));
       }
-    } catch {
-      // Basket may not exist yet
+    } catch (_e) {
+      void _e;
     }
   }, [location]);
 
@@ -126,7 +124,7 @@ export default function PaymentPage() {
     <div className="min-h-screen bg-surface">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Success Overlay Modal */}
+
       {checkoutResult === 'success' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
           <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-ambient max-w-md w-full text-center border border-outline-variant/10">
@@ -146,7 +144,7 @@ export default function PaymentPage() {
       )}
 
       <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Header */}
+
         <div className="flex justify-between items-center mb-12">
           <div className="font-black text-primary text-lg tracking-tight uppercase flex items-center gap-2 leading-tight">
             <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center text-white shrink-0">
@@ -160,7 +158,7 @@ export default function PaymentPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          {/* Left Column (Forms) */}
+
           <div className="lg:col-span-7">
             <h1 className="text-4xl md:text-5xl font-black uppercase leading-[1.1] tracking-tightest mb-3">
               COMPLETE SECURE<br />PAYMENT
@@ -169,7 +167,7 @@ export default function PaymentPage() {
               Review your transaction and finalize the ledger entry.
             </p>
 
-            {/* Credit Card Box */}
+
             <div className="bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-ambient mb-8">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-primary font-bold text-lg">Credit or Debit Card</h3>
@@ -245,7 +243,7 @@ export default function PaymentPage() {
               </div>
             </div>
 
-            {/* Processing State */}
+
             <div className="mb-8 lg:mb-0">
               <h4 className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase mb-3">Preview: Transaction Processing State</h4>
               <div className="bg-surface-container-low rounded-lg p-4 flex items-center gap-3 border border-outline-variant/10">
@@ -255,9 +253,9 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          {/* Right Column (Summary) */}
+
           <div className="lg:col-span-5 flex flex-col h-full">
-            {/* Event Card */}
+
             <div className="relative bg-[#100b29] rounded-xl overflow-hidden p-6 md:p-8 mb-6 text-white shadow-ambient shrink-0">
               <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-cover bg-center" style={{ backgroundImage: `url(${eventImage})` }} />
               <div className="absolute inset-0 bg-gradient-to-t from-[#100b29] via-[#100b29]/80 to-transparent" />
@@ -276,7 +274,7 @@ export default function PaymentPage() {
               </div>
             </div>
 
-            {/* Order Summary */}
+
             <div className="bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-ambient mb-6 shrink-0 border border-outline-variant/10">
               <div className="flex justify-between items-center border-b border-outline-variant/20 pb-4 mb-5">
                 <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Transaction ID</span>
@@ -338,7 +336,7 @@ export default function PaymentPage() {
               </div>
             </div>
 
-            {/* Priority Cards */}
+
             <div className="grid grid-cols-2 gap-4 mb-10 shrink-0">
               <div className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-3 shadow-ambient border border-outline-variant/5">
                 <div className="bg-[#e2ffe9] text-secondary p-2.5 rounded-lg">
@@ -360,7 +358,7 @@ export default function PaymentPage() {
               </div>
             </div>
 
-            {/* Footer */}
+
             <div className="text-center mt-auto pb-6">
               <div className="flex justify-center gap-6 mb-4">
                 <a href="#" className="text-[10px] text-on-surface-variant hover:text-primary transition-colors">Terms of Sale</a>
