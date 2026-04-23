@@ -6,7 +6,6 @@ import { TrendingUp, ArrowUpRight, Plus, Trash2, Edit3, X, Loader, AlertCircle, 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getEvents, getPayments, createEvent, deleteEvent } from '../services/api';
 import { trendChartData } from '../data/mockData';
-import './AdminPage.css';
 
 export default function AdminPage() {
   const [events, setEvents] = useState([]);
@@ -170,7 +169,7 @@ export default function AdminPage() {
                 <DollarSign size={18} className="text-white" />
               </div>
               <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>TOTAL REVENUE</p>
-              <p className="fw-bold mb-0 small">${totalRevenue.toFixed(2)}</p>
+              <p className="fw-black mb-0 fs-6">${totalRevenue.toFixed(2)}</p>
             </div>
           </div>
         </div>
@@ -181,7 +180,7 @@ export default function AdminPage() {
                 <Ticket size={18} className="text-white" />
               </div>
               <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>TRANSACTIONS</p>
-              <p className="fw-bold mb-0 small">{totalTransactions}</p>
+              <p className="fw-black mb-0 fs-6">{totalTransactions}</p>
             </div>
           </div>
         </div>
@@ -192,7 +191,7 @@ export default function AdminPage() {
                 <Activity size={18} className="text-white" />
               </div>
               <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>EVENTS LIVE</p>
-              <p className="fw-bold mb-0 small">{events.length}</p>
+              <p className="fw-black mb-0 fs-6">{events.length}</p>
             </div>
           </div>
         </div>

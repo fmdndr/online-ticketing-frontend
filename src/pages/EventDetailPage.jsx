@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Minus, Plus, Clock, TrendingUp, ArrowRight, Loader, AlertCircle } from 'lucide-react';
-import { getEventById, updateBasket, USER_ID } from '../services/api';
+import { Clock, TrendingUp, ArrowRight } from 'lucide-react';
+import { getEventById, updateBasket, getUserId } from '../services/api';
 import { useToast } from '../components/Toast/useToast';
 import { ToastContainer } from '../components/Toast/Toast';
 import { featuredEvent } from '../data/mockData';
-import './EventDetailPage.css';
+import { Button } from '../components/UI/Button';
+import { Badge } from '../components/UI/Badge';
+import { EventGridSkeleton } from '../components/States/LoadingState';
+import { ErrorState } from '../components/States/ErrorState';
 
 export default function EventDetailPage() {
   const { id } = useParams();
@@ -76,6 +79,11 @@ export default function EventDetailPage() {
   const handleSecureTickets = async () => {
     if (totalTickets === 0) return;
 
+    if (!localStorage.getItem('auth_token')) {
+      navigate('/login', { state: { from: `/event/${event.id}` } });
+      return;
+    }
+
     setAddingToCart(true);
 
     const items = ticketTypes
@@ -90,7 +98,7 @@ export default function EventDetailPage() {
 
     try {
       await updateBasket({
-        userId: USER_ID,
+        userId: getUserId(),
         items,
       });
 
@@ -121,56 +129,18 @@ export default function EventDetailPage() {
     { id: 8, x: 170, y: 95, w: 40, h: 25, available: true },
   ];
 
-  // Loading state
   if (loading) {
     return (
-      <div className="detail-page container-fluid py-4">
-        <nav aria-label="breadcrumb" className="mb-3">
-          <ol className="breadcrumb mb-0">
-            <li className="breadcrumb-item"><Link to="/">Events</Link></li>
-            <li className="breadcrumb-item active">Loading...</li>
-          </ol>
-        </nav>
-        <div className="row g-4">
-          <div className="col-lg-8">
-            <div className="placeholder-glow mb-3">
-              <div className="placeholder w-100 rounded" style={{ height: '300px' }} />
-            </div>
-            <div className="placeholder-glow">
-              <span className="placeholder col-8 d-block mb-3 fs-4"></span>
-              <span className="placeholder col-10 d-block mb-2"></span>
-              <span className="placeholder col-6 d-block"></span>
-            </div>
-          </div>
-          <div className="col-lg-4">
-            <div className="card">
-              <div className="card-body placeholder-glow">
-                <span className="placeholder col-6 d-block mb-3 fs-5"></span>
-                <span className="placeholder col-8 d-block mb-2"></span>
-                <span className="placeholder col-10 d-block"></span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen bg-surface py-12 px-6">
+        <EventGridSkeleton />
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="detail-page container-fluid py-4">
-        <nav aria-label="breadcrumb" className="mb-3">
-          <ol className="breadcrumb mb-0">
-            <li className="breadcrumb-item"><Link to="/">Events</Link></li>
-            <li className="breadcrumb-item active">Error</li>
-          </ol>
-        </nav>
-        <div className="alert alert-danger d-flex align-items-center gap-3" role="alert">
-          <AlertCircle size={22} className="flex-shrink-0" />
-          <div className="flex-grow-1">{error}</div>
-          <Link to="/" className="btn btn-sm btn-outline-danger ms-2">Browse Events</Link>
-        </div>
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center py-12 px-6">
+        <ErrorState message={error} onRetry={fetchEvent} />
       </div>
     );
   }
@@ -182,75 +152,56 @@ export default function EventDetailPage() {
     : '';
 
   return (
-    <div className="detail-page container-fluid py-4">
+    <div className="min-h-screen bg-surface pb-16">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Breadcrumb */}
-      <nav aria-label="breadcrumb" className="mb-3">
-        <ol className="breadcrumb mb-0">
-          <li className="breadcrumb-item"><Link to="/">Events</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">{event?.name || 'Event Detail'}</li>
-        </ol>
-      </nav>
-
-      {/* Countdown Bar */}
-      <div className="countdown-bar" id="countdown-bar">
-        <Clock size={14} />
-        <span>TICKETS HELD FOR</span>
-        <span className="countdown-bar__time">{formatTime(timeLeft)}</span>
+      {/* Floating Queue Status Bar */}
+      <div className="bg-tertiary-container text-on-tertiary-fixed py-2 px-6 flex justify-center md:justify-between items-center font-mono text-sm sticky top-0 z-50 shadow-ambient">
+        <span className="hidden md:inline font-bold">HIGH DEMAND TICKET POOL</span>
+        <div className="flex gap-4 items-center">
+          <Clock size={16} />
+          <span>TICKETS HELD FOR</span>
+          <span className="font-bold text-lg" aria-live="polite">{formatTime(timeLeft)}</span>
+        </div>
       </div>
 
       {/* Hero Banner */}
-      <div className="detail-hero" id="detail-hero">
+      <div className="relative h-64 md:h-96 w-full">
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
         <img
           src={heroImage}
           alt={heroTitle}
-          className="detail-hero__image"
+          className="w-full h-full object-cover"
           onError={(e) => {
             e.target.src = featuredEvent.image;
           }}
         />
-        <div className="detail-hero__overlay">
-          <h1 className="detail-hero__title">{heroTitle}</h1>
-          <p className="detail-hero__subtitle">{heroSubtitle}</p>
+        <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-20 bg-gradient-to-t from-black via-black/60 to-transparent">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tightest text-white mb-2">{heroTitle}</h1>
+            <p className="text-white/80 font-retina text-lg">{heroSubtitle}</p>
+          </div>
         </div>
       </div>
 
-      {/* Content Grid */}
-      <div className="row g-4">
-        {/* Main */}
-        <div className="col-lg-8">
-          {/* Event Description */}
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Main Workspace (Base -> Intermediate Shift) */}
+        <div className="lg:col-span-8 space-y-8">
+          
           {event?.description && (
-            <div className="card mb-3" id="event-description">
-              <div className="card-body">
-                <p className="small text-secondary mb-0 lh-lg">{event.description}</p>
-              </div>
-            </div>
+             <section className="bg-surface-container-low p-8 rounded">
+                <p className="text-on-surface-variant font-retina leading-relaxed">{event.description}</p>
+             </section>
           )}
 
-          {/* Seat Map */}
-          <div className="card mb-3" id="section-select">
-            <div className="card-header">
-              <h6 className="mb-0 fw-bold">SELECT YOUR SECTION</h6>
-            </div>
-            <div className="card-body">
-              <p className="small text-secondary mb-3">Interactive arena map. Hover for availability.</p>
-              <div className="d-flex gap-3 mb-3">
-                <span className="d-flex align-items-center gap-2 small">
-                  <span className="d-inline-block rounded-1" style={{ width: 12, height: 12, background: 'var(--primary)' }}></span>
-                  AVAILABLE
-                </span>
-                <span className="d-flex align-items-center gap-2 small text-secondary">
-                  <span className="d-inline-block rounded-1" style={{ width: 12, height: 12, background: '#D1D5DB' }}></span>
-                  SOLD
-                </span>
-              </div>
-
-              <div className="seat-map" id="seat-map">
-                <svg viewBox="0 0 230 140" className="seat-map__svg">
-                    <rect x="60" y="10" width="110" height="35" rx="6" fill="#E5E7EB" stroke="#D1D5DB" strokeWidth="1.5" />
-                    <text x="115" y="32" textAnchor="middle" fill="#6B7280" fontSize="10" fontWeight="700" letterSpacing="2">STAGE</text>
+          <section className="bg-surface-container-low p-8 md:p-12 rounded">
+             <h2 className="text-3xl font-extrabold tracking-tightest mb-8 text-on-surface uppercase">Select Your Section</h2>
+             
+             {/* Complex Seat Map needing Ghost Border (outline-variant 15%) */}
+             <div className="aspect-video bg-surface-container-lowest rounded border border-outline-variant/15 flex items-center justify-center relative shadow-ambient overflow-hidden p-4">
+                <svg viewBox="0 0 230 140" className="w-full h-full max-h-[400px]">
+                    <rect x="60" y="10" width="110" height="35" rx="6" fill="var(--color-surface-container-highest)" stroke="var(--color-outline-variant)" strokeWidth="1.5" strokeOpacity="0.15" />
+                    <text x="115" y="32" textAnchor="middle" fill="currentColor" fontSize="10" fontWeight="700" letterSpacing="2" className="text-on-surface-variant font-sans">STAGE</text>
                     
                     {/* Seat Sections */}
                     {seatSections.map((sec) => (
@@ -261,108 +212,92 @@ export default function EventDetailPage() {
                           width={sec.w}
                           height={sec.h}
                           rx="4"
-                          fill={sec.available ? '#4F46E5' : '#D1D5DB'}
+                          fill={sec.available ? 'var(--color-primary)' : 'var(--color-surface-container-highest)'}
                           opacity={sec.available ? 0.85 : 0.5}
-                          className={sec.available ? 'seat-map__section--available' : ''}
+                          className={`transition-all duration-300 ${sec.available ? 'hover:opacity-100 hover:scale-105 cursor-pointer origin-center shadow-primary' : ''}`}
+                          style={{ transformBox: 'fill-box' }}
                         />
                       </g>
                     ))}
                   </svg>
-              </div>
-            </div>
-          </div>
+             </div>
+          </section>
+        </div>
 
-          {/* Ticket Tiers */}
-          <div id="ticket-tiers">
-            <h5 className="fw-bold mb-3">TICKET TIERS</h5>
-            {ticketTypes.map((tier) => (
-              <div key={tier.name} className="card mb-3" id={`tier-${tier.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <div className="d-flex align-items-center gap-2">
-                      <h6 className="fw-bold mb-0">{tier.name.toUpperCase()}</h6>
+        {/* Action Sidebar (Highest Elevation Layering) */}
+        <aside className="lg:col-span-4 space-y-6">
+          <div className="bg-surface-container-lowest p-8 rounded shadow-ambient sticky top-24">
+            <h3 className="text-2xl font-extrabold tracking-tightest mb-6 text-on-surface uppercase">Ticket Tiers</h3>
+            
+            <div className="space-y-4">
+              {ticketTypes.map((tier) => (
+                <div key={tier.name} className="p-4 bg-surface-container-low rounded border border-transparent hover:border-outline-variant/15 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex flex-col gap-1">
+                      <div className="font-extrabold text-on-surface uppercase">{tier.name}</div>
                       {tier.availableQuantity <= 20 && tier.availableQuantity > 0 && (
-                        <span className="badge bg-danger">{tier.availableQuantity <= 5 ? 'ALMOST GONE' : 'FEW LEFT'}</span>
+                        <Badge variant="urgency">{tier.availableQuantity <= 5 ? 'ALMOST GONE' : 'FEW LEFT'}</Badge>
                       )}
                       {tier.availableQuantity === 0 && (
-                        <span className="badge bg-danger">SOLD OUT</span>
+                        <Badge variant="urgency">SOLD OUT</Badge>
                       )}
                     </div>
                     <div className="text-end">
-                      <span className="fw-black fs-5">${tier.price.toFixed(2)}</span>
-                      <span className="text-secondary ms-1 small">+ FEES</span>
+                      <span className="font-mono text-lg font-bold">${tier.price.toFixed(2)}</span>
+                      <span className="text-on-surface-variant ms-1 text-xs">+ FEES</span>
                     </div>
                   </div>
-                  <p className="small text-secondary mb-3">
-                    {tier.availableQuantity > 0 ? `${tier.availableQuantity} tickets remaining` : 'No tickets available'}
-                  </p>
-                  <div className="d-flex align-items-center justify-content-between">
-                    <small className="text-secondary fw-semibold" style={{ letterSpacing: '0.5px' }}>QUANTITY</small>
-                    <div className="input-group input-group-sm" style={{ width: '130px' }}>
+                  
+                  <div className="flex items-center justify-between mt-4">
+                    <span className="text-xs font-bold text-on-surface-variant tracking-wider uppercase">Quantity</span>
+                    <div className="flex items-center bg-surface-container-high rounded p-1">
                       <button
-                        className="btn btn-outline-secondary"
+                        className="p-1 w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-lowest transition-colors disabled:opacity-50"
                         onClick={() => handleQty(tier.name, -1)}
                         disabled={(quantities[tier.name] || 0) === 0}
-                        id={`qty-minus-${tier.name.toLowerCase().replace(/\s+/g, '-')}`}
                       >
-                        <Minus size={14} />
+                        -
                       </button>
-                      <span className="input-group-text justify-content-center fw-bold" style={{ minWidth: '44px' }}>
+                      <span className="font-mono w-8 text-center font-bold">
                         {quantities[tier.name] || 0}
                       </span>
                       <button
-                        className="btn btn-outline-secondary"
+                        className="p-1 w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-lowest transition-colors disabled:opacity-50"
                         onClick={() => handleQty(tier.name, 1)}
                         disabled={tier.availableQuantity === 0 || (quantities[tier.name] || 0) >= tier.availableQuantity}
-                        id={`qty-plus-${tier.name.toLowerCase().replace(/\s+/g, '-')}`}
                       >
-                        <Plus size={14} />
+                        +
                       </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="col-lg-4">
-          <div className="card" style={{ position: 'sticky', top: '80px' }} id="detail-footer">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <small className="text-secondary fw-semibold" style={{ letterSpacing: '0.5px' }}>
-                  SUBTOTAL ({totalTickets} TICKET{totalTickets !== 1 ? 'S' : ''})
-                </small>
-                <span className="fw-black fs-4">${subtotal.toFixed(2)}</span>
-              </div>
-              <button
-                className="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2 mb-3"
-                id="secure-tickets-btn"
-                onClick={handleSecureTickets}
-                disabled={totalTickets === 0 || addingToCart}
-              >
-                {addingToCart ? (
-                  <><Loader size={18} className="spin-icon" /> RESERVING...</>
-                ) : (
-                  <>SECURE MY TICKETS <ArrowRight size={18} /></>
-                )}
-              </button>
-              <p className="text-secondary text-center mb-0" style={{ fontSize: '0.72rem' }}>
-                By clicking, you agree to our Terms of Sale. No refunds.
-              </p>
+              ))}
             </div>
-            <div className="card-footer d-flex align-items-start gap-3" id="demand-alert">
-              <div className="rounded-2 p-2 bg-warning bg-opacity-10 d-inline-flex flex-shrink-0">
-                <TrendingUp size={16} className="text-warning" />
+
+            <div className="mt-8 pt-6 border-t border-outline-variant/15 flex justify-between items-end mb-8">
+              <span className="font-retina text-on-surface-variant uppercase text-xs font-bold tracking-wider">Subtotal ({totalTickets})</span>
+              <span className="font-mono text-3xl font-bold text-on-surface">${subtotal.toFixed(2)}</span>
+            </div>
+
+            <Button 
+              className="w-full text-lg py-4 flex items-center gap-2" 
+              onClick={handleSecureTickets}
+              disabled={totalTickets === 0 || addingToCart}
+            >
+              {addingToCart ? 'RESERVING...' : <>SECURE MY TICKETS <ArrowRight size={20} /></>}
+            </Button>
+
+            <div className="mt-6 bg-tertiary-container/10 p-5 rounded text-tertiary-container text-sm flex gap-3 items-start">
+              <div className="bg-tertiary-container p-1 rounded mt-0.5 shrink-0 text-white">
+                 <TrendingUp size={14} />
               </div>
               <div>
-                <div className="fw-bold small">DEMAND IS HIGH</div>
-                <p className="text-secondary mb-0 small">1,240 people are looking at this event right now.</p>
+                 <span className="block font-bold mb-1 uppercase tracking-wider text-xs">Demand Alert</span>
+                 <span className="font-retina leading-relaxed text-on-surface">1,240 people are looking at this event right now. Complete your purchase quickly.</span>
               </div>
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

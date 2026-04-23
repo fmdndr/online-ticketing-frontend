@@ -1,12 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
-import './Layout.css';
 
 export default function Layout() {
   return (
-    <div className="layout">
+    <div className="min-h-screen bg-surface font-sans">
       <Header />
-      <div className="layout__content">
+      <div className="pt-[73px]"> {/* Offset for fixed header */}
         <Outlet />
       </div>
     </div>
