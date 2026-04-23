@@ -149,392 +149,321 @@ export default function AdminPage() {
     <div className="admin-page container-fluid py-4">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-
-      <div className="mb-4">
-        <h2 className="fw-black mb-1">Sales Velocity</h2>
-        <p className="text-secondary small mb-0">Real-time throughput monitoring for live event distribution channels.</p>
-      </div>
-
-
-      <div className="row g-3 mb-4">
-        <div className="col-4">
-          <div className="card text-center h-100">
-            <div className="card-body py-3">
-              <div className="rounded-2 p-2 d-inline-flex mb-2" style={{ background: 'var(--accent-green)' }}>
-                <DollarSign size={18} className="text-white" />
-              </div>
-              <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>TOTAL REVENUE</p>
-              <p className="fw-black mb-0 fs-6">${totalRevenue.toFixed(2)}</p>
-            </div>
-          </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-2">Sales Velocity</h1>
+          <p className="text-on-surface-variant text-lg">Real-time throughput monitoring for live event distribution channels.</p>
         </div>
-        <div className="col-4">
-          <div className="card text-center h-100">
-            <div className="card-body py-3">
-              <div className="rounded-2 p-2 d-inline-flex mb-2 bg-primary">
-                <Ticket size={18} className="text-white" />
-              </div>
-              <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>TRANSACTIONS</p>
-              <p className="fw-black mb-0 fs-6">{totalTransactions}</p>
-            </div>
-          </div>
-        </div>
-        <div className="col-4">
-          <div className="card text-center h-100">
-            <div className="card-body py-3">
-              <div className="rounded-2 p-2 d-inline-flex mb-2" style={{ background: '#7C3AED' }}>
-                <Activity size={18} className="text-white" />
-              </div>
-              <p className="text-secondary mb-1" style={{ fontSize: '0.58rem', letterSpacing: '0.8px', fontWeight: 600 }}>EVENTS LIVE</p>
-              <p className="fw-black mb-0 fs-6">{events.length}</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-
-      <div className="row g-3 mb-4">
-        <div className="col-md-8">
-          <div className="card h-100">
-            <div className="card-header d-flex align-items-center gap-2">
-              <TrendingUp size={15} />
-              <h6 className="mb-0 fw-bold">Transaction Trends</h6>
-            </div>
-            <div className="card-body">
-              <ResponsiveContainer width="100%" height={180}>
-                <LineChart data={paymentChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Transaction Trends */}
+          <div className="lg:col-span-2 bg-surface-container-lowest rounded-2xl p-6 shadow-ambient">
+            <h3 className="font-extrabold text-on-surface mb-6">Transaction Trends</h3>
+            <div className="h-[240px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={paymentChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e3e4e5" />
                   <XAxis
                     dataKey="time"
-                    tick={{ fontSize: 10, fill: '#9CA3AF' }}
-                    axisLine={{ stroke: '#E5E7EB' }}
+                    axisLine={false}
                     tickLine={false}
-                    interval={2}
+                    tick={{ fill: '#6f7173', fontSize: 12 }}
+                    dy={10}
                   />
                   <YAxis hide />
                   <Tooltip
-                    contentStyle={{ background: '#0F0F1A', border: 'none', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', color: '#fff' }}
-                    itemStyle={{ color: '#A78BFA' }}
-                    labelStyle={{ color: '#9CA3AF', fontSize: '10px' }}
+                    contentStyle={{ backgroundColor: '#191c1d', border: 'none', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#4f46e5' }}
                   />
-                  <Line type="monotone" dataKey="value" stroke="#4F46E5" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#4F46E5', stroke: '#fff', strokeWidth: 2 }} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#4f46e5" 
+                    strokeWidth={3} 
+                    dot={false} 
+                    activeDot={{ r: 6, fill: '#4f46e5', stroke: '#fff', strokeWidth: 2 }} 
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card h-100 text-white" style={{ background: 'var(--gradient-peak)' }}>
-            <div className="card-body d-flex flex-column justify-content-between">
-              <div>
-                <h6 className="fw-bold text-white mb-1">Peak Intensity</h6>
-                <p className="small mb-3" style={{ color: 'rgba(255,255,255,0.7)' }}>Success rate for processed transactions.</p>
-              </div>
-              <div>
-                <div className="mb-2">
-                  <span className="fw-black" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>{successRate}%</span>
-                </div>
-                <div className="d-flex align-items-center gap-2">
-                  <ArrowUpRight size={14} />
-                  <small className="fw-semibold" style={{ letterSpacing: '0.8px' }}>{completedPayments} OF {totalTransactions} COMPLETED</small>
-                </div>
+
+          {/* Peak Intensity */}
+          <div className="bg-primary rounded-2xl p-6 shadow-primary flex flex-col justify-between text-on-primary">
+            <div>
+              <h3 className="font-extrabold mb-1">Peak Intensity</h3>
+              <p className="text-on-primary/70 text-sm">Maximum concurrent load handled today.</p>
+            </div>
+            <div className="mt-12">
+              <div className="text-6xl md:text-7xl font-extrabold tracking-tight mb-4">{successRate}%</div>
+              <div className="flex items-center gap-2 text-xs font-extrabold tracking-widest uppercase text-on-primary/90">
+                <TrendingUp size={14} /> +12.4% FROM YESTERDAY
               </div>
             </div>
           </div>
         </div>
-      </div>
 
 
-      <div className="card mb-4" id="event-management">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h6 className="mb-0 fw-bold">Event Management</h6>
-          <button
-            className="btn btn-primary btn-sm d-flex align-items-center gap-1"
-            onClick={() => setShowCreateModal(true)}
-            id="create-event-btn"
-          >
-            <Plus size={14} /> New Event
-          </button>
-        </div>
-        <div className="card-body p-0">
-          {loading ? (
-            <div className="d-flex align-items-center justify-content-center gap-2 py-4 text-secondary">
-              <Loader size={18} className="spin-icon" />
-              <small>Loading events...</small>
-            </div>
-          ) : error ? (
-            <div className="d-flex align-items-center gap-2 p-3 text-danger">
-              <AlertCircle size={15} />
-              <small>{error}</small>
-            </div>
-          ) : events.length === 0 ? (
-            <p className="text-secondary text-center small py-4 mb-0">No events yet. Create your first event!</p>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        <div className="bg-surface-container-lowest rounded-2xl shadow-ambient overflow-hidden mb-8">
+          <div className="p-6 md:p-8 border-b border-outline-variant/30 flex justify-between items-center">
+            <h3 className="font-extrabold text-on-surface text-lg">Recent Ledger Activity</h3>
+          </div>
+          <div className="overflow-x-auto">
+            {payments.length === 0 ? (
+              <p className="text-on-surface-variant text-center text-sm py-8">No transactions yet.</p>
+            ) : (
+              <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr>
-                    <th className="ps-3 small fw-semibold">EVENT</th>
-                    <th className="small fw-semibold d-none d-sm-table-cell">VENUE</th>
-                    <th className="small fw-semibold d-none d-md-table-cell">CATEGORY</th>
-                    <th className="small fw-semibold d-none d-sm-table-cell">TICKETS</th>
-                    <th className="pe-3"></th>
+                  <tr className="bg-surface-container-low text-on-surface-variant text-[10px] font-extrabold tracking-widest uppercase">
+                    <th className="px-6 py-4">Transaction ID</th>
+                    <th className="px-6 py-4 hidden sm:table-cell">Date</th>
+                    <th className="px-6 py-4 text-right">Amount</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-outline-variant/20">
+                  {payments.slice(0, 10).map((payment, index) => (
+                    <tr key={payment.id || index} className="hover:bg-surface-container-low transition-colors">
+                      <td className="px-6 py-4 font-mono text-sm text-primary">
+                        TX-{payment.orderId ? payment.orderId.substring(0, 8).toUpperCase() : 'UNKNOWN'}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-on-surface-variant hidden sm:table-cell">
+                        {formatDate(payment.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-extrabold text-on-surface text-right">
+                        ${(payment.totalAmount || 0).toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-surface-container-lowest rounded-2xl shadow-ambient overflow-hidden mb-8">
+          <div className="p-6 md:p-8 border-b border-outline-variant/30 flex justify-between items-center">
+            <h3 className="font-extrabold text-on-surface text-lg">Event Management</h3>
+            <button
+              className="bg-primary hover:bg-primary-container text-on-primary font-extrabold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors text-sm"
+              onClick={() => setShowCreateModal(true)}
+            >
+              <Plus size={16} /> New Event
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="flex items-center justify-center gap-2 py-8 text-on-surface-variant">
+                <Loader size={20} className="animate-spin" />
+                <span className="text-sm font-bold">Loading events...</span>
+              </div>
+            ) : error ? (
+              <div className="flex items-center gap-2 p-6 text-error">
+                <AlertCircle size={20} />
+                <span className="text-sm">{error}</span>
+              </div>
+            ) : events.length === 0 ? (
+              <p className="text-on-surface-variant text-center text-sm py-8">No events yet. Create your first event!</p>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-surface-container-low text-on-surface-variant text-[10px] font-extrabold tracking-widest uppercase">
+                    <th className="px-6 py-4">Event</th>
+                    <th className="px-6 py-4 hidden sm:table-cell">Venue</th>
+                    <th className="px-6 py-4 hidden md:table-cell">Category</th>
+                    <th className="px-6 py-4 hidden sm:table-cell">Tickets</th>
+                    <th className="px-6 py-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/20">
                   {events.map((event) => (
-                    <tr key={event.id} id={`manage-event-${event.id}`}>
-                      <td className="ps-3 fw-semibold small">{event.name}</td>
-                      <td className="small text-secondary d-none d-sm-table-cell">{event.venue}</td>
-                      <td className="small text-secondary d-none d-md-table-cell">{event.category}</td>
-                      <td className="small text-secondary d-none d-sm-table-cell">
+                    <tr key={event.id} className="hover:bg-surface-container-low transition-colors">
+                      <td className="px-6 py-4 font-bold text-sm text-on-surface">{event.name}</td>
+                      <td className="px-6 py-4 text-sm text-on-surface-variant hidden sm:table-cell">{event.venue}</td>
+                      <td className="px-6 py-4 text-sm text-on-surface-variant hidden md:table-cell">{event.category}</td>
+                      <td className="px-6 py-4 text-sm text-on-surface-variant hidden sm:table-cell">
                         {event.ticketTypes?.length || 0} type{event.ticketTypes?.length !== 1 ? 's' : ''}
                       </td>
-                      <td className="text-end pe-3">
+                      <td className="px-6 py-4 text-right">
                         <button
-                          className="btn btn-sm btn-outline-danger"
+                          className="text-error hover:text-error/80 p-2 rounded transition-colors"
                           onClick={() => handleDeleteEvent(event.id, event.name)}
                           title="Delete event"
                         >
-                          <Trash2 size={13} />
+                          <Trash2 size={18} />
                         </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-
-
-      <div className="card mb-4" id="ledger-activity">
-        <div className="card-header">
-          <h6 className="mb-0 fw-bold">Recent Ledger Activity</h6>
-        </div>
-        <div className="card-body p-0">
-          {payments.length === 0 ? (
-            <p className="text-secondary text-center small py-4 mb-0">No transactions yet.</p>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th className="ps-3 small fw-semibold">ORDER ID</th>
-                    <th className="small fw-semibold d-none d-sm-table-cell">DATE</th>
-                    <th className="small fw-semibold text-end pe-3">AMOUNT</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payments.slice(0, 10).map((payment, index) => (
-                    <tr key={payment.id || index} className="animate-slide-in" style={{ animationDelay: `${index * 0.06}s` }} id={`tx-row-${index}`}>
-                      <td className="ps-3 small" style={{ fontFamily: 'monospace' }}>
-                        {payment.orderId ? payment.orderId.substring(0, 13) + '...' : '-'}
-                      </td>
-                      <td className="small text-secondary d-none d-sm-table-cell">{formatDate(payment.createdAt)}</td>
-                      <td className="text-end pe-3">
-                        <span className={`badge ${
-                          payment.status === 2 || payment.status === 'Completed' ? 'bg-success' :
-                          payment.status === 3 || payment.status === 'Failed' ? 'bg-danger' : 'bg-warning text-dark'
-                        }`}>
-                          ${(payment.totalAmount || 0).toFixed(2)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
 
 
       {showCreateModal && (
-        <>
-          <div
-            className="modal show d-block"
-            tabIndex="-1"
-            role="dialog"
-            id="create-event-modal"
-            style={{ zIndex: 1055 }}
-            data-bs-theme="dark"
-          >
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-              <div className="modal-content">
+        <div className="fixed inset-0 z-[1055] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
+          <div className="relative bg-surface-container-low rounded-2xl shadow-ambient w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-outline-variant/20">
+            
+            <div className="flex justify-between items-center p-6 border-b border-outline-variant/30">
+              <h5 className="text-xl font-extrabold text-on-surface">Create New Event</h5>
+              <button
+                type="button"
+                className="text-on-surface-variant hover:text-on-surface transition-colors"
+                onClick={() => setShowCreateModal(false)}
+              >
+                <X size={24} />
+              </button>
+            </div>
 
-                <div className="modal-header">
-                  <h5 className="modal-title fw-semibold">Create New Event</h5>
-                  <button
-                    type="button"
-                    className="btn-close btn-close-white"
-                    aria-label="Close"
-                    onClick={() => setShowCreateModal(false)}
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="mb-4">
+                <label className="block text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase mb-1">Event Name</label>
+                <input
+                  className="w-full bg-surface-container-highest border border-transparent rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all"
+                  placeholder="e.g. Rock Festival 2026"
+                  value={newEvent.name}
+                  onChange={(e) => setNewEvent((prev) => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase mb-1">Description</label>
+                <textarea
+                  className="w-full bg-surface-container-highest border border-transparent rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all"
+                  rows={3}
+                  placeholder="Event description..."
+                  value={newEvent.description}
+                  onChange={(e) => setNewEvent((prev) => ({ ...prev, description: e.target.value }))}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase mb-1">Category</label>
+                  <select
+                    className="w-full bg-surface-container-highest border border-transparent rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all"
+                    value={newEvent.category}
+                    onChange={(e) => setNewEvent((prev) => ({ ...prev, category: e.target.value }))}
+                  >
+                    <option value="Music">Music</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Theater">Theater</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase mb-1">Date &amp; Time</label>
+                  <DatePicker
+                    selected={newEvent.date}
+                    onChange={(date) => setNewEvent((prev) => ({ ...prev, date }))}
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    dateFormat="MMM d, yyyy HH:mm"
+                    placeholderText="Select date &amp; time"
+                    minDate={new Date()}
+                    className="w-full bg-surface-container-highest border border-transparent rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all"
+                    wrapperClassName="w-full"
                   />
                 </div>
+              </div>
 
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label small text-uppercase text-secondary">Event Name</label>
+              <div className="mb-4">
+                <label className="block text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase mb-1">Venue</label>
+                <input
+                  className="w-full bg-surface-container-highest border border-transparent rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all"
+                  placeholder="e.g. Central Park Arena, Istanbul"
+                  value={newEvent.venue}
+                  onChange={(e) => setNewEvent((prev) => ({ ...prev, venue: e.target.value }))}
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase mb-1">Image URL</label>
+                <input
+                  className="w-full bg-surface-container-highest border border-transparent rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all"
+                  placeholder="https://picsum.photos/seed/event/800/400"
+                  value={newEvent.imageUrl}
+                  onChange={(e) => setNewEvent((prev) => ({ ...prev, imageUrl: e.target.value }))}
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-[10px] font-extrabold text-on-surface-variant tracking-widest uppercase">Ticket Types</label>
+                  <button
+                    type="button"
+                    className="text-xs font-bold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+                    onClick={addTicketType}
+                  >
+                    <Plus size={14} /> Add Tier
+                  </button>
+                </div>
+
+                {newEvent.ticketTypes.map((tier, i) => (
+                  <div key={i} className="flex gap-2 mb-2 items-center">
                     <input
-                      className="form-control"
-                      placeholder="e.g. Rock Festival 2026"
-                      value={newEvent.name}
-                      onChange={(e) => setNewEvent((prev) => ({ ...prev, name: e.target.value }))}
+                      className="flex-1 bg-surface-container-highest border border-transparent rounded-lg p-2 text-sm text-on-surface outline-none"
+                      placeholder="Name"
+                      value={tier.name}
+                      onChange={(e) => updateTicketType(i, 'name', e.target.value)}
                     />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small text-uppercase text-secondary">Description</label>
-                    <textarea
-                      className="form-control"
-                      rows={3}
-                      placeholder="Event description..."
-                      value={newEvent.description}
-                      onChange={(e) => setNewEvent((prev) => ({ ...prev, description: e.target.value }))}
-                    />
-                  </div>
-
-                  <div className="row g-3 mb-3">
-                    <div className="col-6">
-                      <label className="form-label small text-uppercase text-secondary">Category</label>
-                      <select
-                        className="form-select"
-                        value={newEvent.category}
-                        onChange={(e) => setNewEvent((prev) => ({ ...prev, category: e.target.value }))}
-                      >
-                        <option value="Music">Music</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Theater">Theater</option>
-                      </select>
-                    </div>
-                    <div className="col-6">
-                      <label className="form-label small text-uppercase text-secondary">Date &amp; Time</label>
-                      <DatePicker
-                        selected={newEvent.date}
-                        onChange={(date) => setNewEvent((prev) => ({ ...prev, date }))}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="MMM d, yyyy HH:mm"
-                        placeholderText="Select date &amp; time"
-                        minDate={new Date()}
-                        className="form-control"
-                        wrapperClassName="w-100"
-                        popperClassName="datepicker-dark"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small text-uppercase text-secondary">Venue</label>
                     <input
-                      className="form-control"
-                      placeholder="e.g. Central Park Arena, Istanbul"
-                      value={newEvent.venue}
-                      onChange={(e) => setNewEvent((prev) => ({ ...prev, venue: e.target.value }))}
+                      type="number"
+                      className="w-24 bg-surface-container-highest border border-transparent rounded-lg p-2 text-sm text-on-surface outline-none"
+                      placeholder="Price"
+                      value={tier.price}
+                      onChange={(e) => updateTicketType(i, 'price', e.target.value)}
                     />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small text-uppercase text-secondary">Image URL</label>
                     <input
-                      className="form-control"
-                      placeholder="https://picsum.photos/seed/event/800/400"
-                      value={newEvent.imageUrl}
-                      onChange={(e) => setNewEvent((prev) => ({ ...prev, imageUrl: e.target.value }))}
+                      type="number"
+                      className="w-24 bg-surface-container-highest border border-transparent rounded-lg p-2 text-sm text-on-surface outline-none"
+                      placeholder="Qty"
+                      value={tier.availableQuantity}
+                      onChange={(e) => updateTicketType(i, 'availableQuantity', e.target.value)}
                     />
-                  </div>
-
-
-                  <div className="mb-2">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <label className="form-label small text-uppercase text-secondary mb-0">Ticket Types</label>
+                    {newEvent.ticketTypes.length > 1 && (
                       <button
                         type="button"
-                        className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                        onClick={addTicketType}
+                        className="p-2 text-error hover:bg-error/10 rounded transition-colors"
+                        onClick={() => removeTicketType(i)}
                       >
-                        <Plus size={13} /> Add Tier
+                        <X size={16} />
                       </button>
-                    </div>
-
-                    {newEvent.ticketTypes.map((tier, i) => (
-                      <div key={i} className="row g-2 mb-2 align-items-center">
-                        <div className="col">
-                          <input
-                            className="form-control form-control-sm"
-                            placeholder="Name"
-                            value={tier.name}
-                            onChange={(e) => updateTicketType(i, 'name', e.target.value)}
-                          />
-                        </div>
-                        <div className="col-3">
-                          <input
-                            type="number"
-                            className="form-control form-control-sm"
-                            placeholder="Price"
-                            value={tier.price}
-                            onChange={(e) => updateTicketType(i, 'price', e.target.value)}
-                          />
-                        </div>
-                        <div className="col-3">
-                          <input
-                            type="number"
-                            className="form-control form-control-sm"
-                            placeholder="Qty"
-                            value={tier.availableQuantity}
-                            onChange={(e) => updateTicketType(i, 'availableQuantity', e.target.value)}
-                          />
-                        </div>
-                        {newEvent.ticketTypes.length > 1 && (
-                          <div className="col-auto">
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-outline-danger"
-                              onClick={() => removeTicketType(i)}
-                            >
-                              <X size={13} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={() => setShowCreateModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={handleCreateEvent}
-                    disabled={creating || !newEvent.name || !newEvent.venue || !newEvent.date}
-                  >
-                    {creating ? (
-                      <>
-                        <Loader size={15} className="spin-icon me-1" /> Creating...
-                      </>
-                    ) : (
-                      'Create Event'
                     )}
-                  </button>
-                </div>
-
+                  </div>
+                ))}
               </div>
             </div>
+
+            <div className="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
+              <button
+                type="button"
+                className="px-5 py-2.5 rounded-lg text-sm font-extrabold text-on-surface hover:bg-surface-container-high transition-colors"
+                onClick={() => setShowCreateModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="px-5 py-2.5 rounded-lg text-sm font-extrabold bg-primary text-on-primary hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
+                onClick={handleCreateEvent}
+                disabled={creating || !newEvent.name || !newEvent.venue || !newEvent.date}
+              >
+                {creating ? (
+                  <>
+                    <Loader size={16} className="animate-spin mr-2" /> Creating...
+                  </>
+                ) : (
+                  'Create Event'
+                )}
+              </button>
+            </div>
           </div>
-          <div className="modal-backdrop show" style={{ zIndex: 1054 }} />
-        </>
+        </div>
       )}
     </div>
   );
