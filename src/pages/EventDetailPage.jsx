@@ -164,7 +164,7 @@ export default function EventDetailPage() {
       </div>
 
 
-      <div className="relative h-64 md:h-96 w-full">
+      <div className="relative h-48 sm:h-64 md:h-96 w-full">
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         <img
           src={heroImage}
@@ -174,29 +174,29 @@ export default function EventDetailPage() {
             e.target.src = featuredEvent.image;
           }}
         />
-        <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-20 bg-gradient-to-t from-black via-black/60 to-transparent">
+        <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 z-20 bg-gradient-to-t from-black via-black/60 to-transparent">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tightest text-white mb-2">{heroTitle}</h1>
-            <p className="text-white/80 font-retina text-lg">{heroSubtitle}</p>
+            <h1 className="text-3xl md:text-6xl font-extrabold tracking-tightest text-white mb-2 uppercase leading-tight">{heroTitle}</h1>
+            <p className="text-white/80 font-retina text-sm md:text-lg">{heroSubtitle}</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
 
-        <div className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-8 order-2 lg:order-1">
 
           {event?.description && (
-             <section className="bg-surface-container-low p-8 rounded">
-                <p className="text-on-surface-variant font-retina leading-relaxed">{event.description}</p>
+             <section className="bg-surface-container-low p-6 md:p-8 rounded-2xl">
+                <p className="text-on-surface-variant font-retina text-sm md:text-base leading-relaxed">{event.description}</p>
              </section>
           )}
 
-          <section className="bg-surface-container-low p-8 md:p-12 rounded">
-             <h2 className="text-3xl font-extrabold tracking-tightest mb-8 text-on-surface uppercase">Select Your Section</h2>
+          <section className="bg-surface-container-low p-6 md:p-12 rounded-2xl">
+             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tightest mb-6 md:mb-8 text-on-surface uppercase">Select Your Section</h2>
 
 
-             <div className="aspect-video bg-surface-container-lowest rounded border border-outline-variant/15 flex items-center justify-center relative shadow-ambient overflow-hidden p-4">
+             <div className="aspect-video bg-surface-container-lowest rounded-2xl border border-outline-variant/15 flex items-center justify-center relative shadow-ambient overflow-hidden p-4">
                 <svg viewBox="0 0 230 140" className="w-full h-full max-h-[400px]">
                     <rect x="60" y="10" width="110" height="35" rx="6" fill="var(--color-surface-container-highest)" stroke="var(--color-outline-variant)" strokeWidth="1.5" strokeOpacity="0.15" />
                     <text x="115" y="32" textAnchor="middle" fill="currentColor" fontSize="10" fontWeight="700" letterSpacing="2" className="text-on-surface-variant font-sans">STAGE</text>
@@ -223,16 +223,16 @@ export default function EventDetailPage() {
         </div>
 
 
-        <aside className="lg:col-span-4 space-y-6">
-          <div className="bg-surface-container-lowest p-8 rounded shadow-ambient sticky top-24">
-            <h3 className="text-2xl font-extrabold tracking-tightest mb-6 text-on-surface uppercase">Ticket Tiers</h3>
+        <aside className="lg:col-span-4 space-y-6 order-1 lg:order-2">
+          <div className="bg-surface-container-lowest p-6 md:p-8 rounded-2xl shadow-ambient lg:sticky lg:top-24">
+            <h3 className="text-xl md:text-2xl font-extrabold tracking-tightest mb-6 text-on-surface uppercase">Ticket Tiers</h3>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {ticketTypes.map((tier) => (
-                <div key={tier.name} className="p-4 bg-surface-container-low rounded border border-transparent hover:border-outline-variant/15 transition-colors">
+                <div key={tier.name} className="p-4 bg-surface-container-low rounded-xl border border-transparent hover:border-outline-variant/15 transition-colors">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex flex-col gap-1">
-                      <div className="font-extrabold text-on-surface uppercase">{tier.name}</div>
+                      <div className="font-extrabold text-on-surface uppercase text-sm">{tier.name}</div>
                       {tier.availableQuantity <= 20 && tier.availableQuantity > 0 && (
                         <Badge variant="urgency">{tier.availableQuantity <= 5 ? 'ALMOST GONE' : 'FEW LEFT'}</Badge>
                       )}
@@ -241,14 +241,14 @@ export default function EventDetailPage() {
                       )}
                     </div>
                     <div className="text-end">
-                      <span className="font-mono text-lg font-bold">${tier.price.toFixed(2)}</span>
-                      <span className="text-on-surface-variant ms-1 text-xs">+ FEES</span>
+                      <span className="font-mono text-base md:text-lg font-bold">${tier.price.toFixed(2)}</span>
+                      <span className="text-on-surface-variant ms-1 text-[10px]">+ FEES</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between mt-4">
-                    <span className="text-xs font-bold text-on-surface-variant tracking-wider uppercase">Quantity</span>
-                    <div className="flex items-center bg-surface-container-high rounded p-1">
+                    <span className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Quantity</span>
+                    <div className="flex items-center bg-surface-container-high rounded-lg p-1">
                       <button
                         className="p-1 w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-lowest transition-colors disabled:opacity-50"
                         onClick={() => handleQty(tier.name, -1)}
@@ -256,7 +256,7 @@ export default function EventDetailPage() {
                       >
                         -
                       </button>
-                      <span className="font-mono w-8 text-center font-bold">
+                      <span className="font-mono w-8 text-center font-bold text-sm">
                         {quantities[tier.name] || 0}
                       </span>
                       <button
@@ -273,25 +273,25 @@ export default function EventDetailPage() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-outline-variant/15 flex justify-between items-end mb-8">
-              <span className="font-retina text-on-surface-variant uppercase text-xs font-bold tracking-wider">Subtotal ({totalTickets})</span>
-              <span className="font-mono text-3xl font-bold text-on-surface">${subtotal.toFixed(2)}</span>
+              <span className="font-retina text-on-surface-variant uppercase text-[10px] font-bold tracking-widest">Subtotal ({totalTickets})</span>
+              <span className="font-mono text-2xl md:text-3xl font-bold text-on-surface">${subtotal.toFixed(2)}</span>
             </div>
 
             <Button
-              className="w-full text-lg py-4 flex items-center gap-2"
+              className="w-full text-base md:text-lg py-4 flex items-center justify-center gap-2 rounded-xl"
               onClick={handleSecureTickets}
               disabled={totalTickets === 0 || addingToCart}
             >
               {addingToCart ? 'RESERVING...' : <>SECURE MY TICKETS <ArrowRight size={20} /></>}
             </Button>
 
-            <div className="mt-6 bg-tertiary-container/10 p-5 rounded text-tertiary-container text-sm flex gap-3 items-start">
+            <div className="mt-6 bg-tertiary-container/10 p-4 rounded-xl text-tertiary-container text-xs flex gap-3 items-start">
               <div className="bg-tertiary-container p-1 rounded mt-0.5 shrink-0 text-white">
-                 <TrendingUp size={14} />
+                 <TrendingUp size={12} />
               </div>
               <div>
-                 <span className="block font-bold mb-1 uppercase tracking-wider text-xs">Demand Alert</span>
-                 <span className="font-retina leading-relaxed text-on-surface">1,240 people are looking at this event right now. Complete your purchase quickly.</span>
+                 <span className="block font-bold mb-1 uppercase tracking-widest text-[10px]">Demand Alert</span>
+                 <span className="font-retina leading-relaxed text-on-surface">Over 1,000 people viewing. Complete purchase quickly.</span>
               </div>
             </div>
           </div>

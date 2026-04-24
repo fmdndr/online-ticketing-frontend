@@ -157,10 +157,10 @@ export default function PaymentPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
 
-          <div className="lg:col-span-7">
-            <h1 className="text-4xl md:text-5xl font-black uppercase leading-[1.1] tracking-tightest mb-3">
+          <div className="lg:col-span-7 order-2 lg:order-1">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-[1.1] tracking-tightest mb-4">
               COMPLETE SECURE<br />PAYMENT
             </h1>
             <p className="text-on-surface-variant mb-8 text-sm md:text-base font-retina max-w-sm">
@@ -168,9 +168,9 @@ export default function PaymentPage() {
             </p>
 
 
-            <div className="bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-ambient mb-8">
+            <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-ambient mb-8 border border-outline-variant/10">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-primary font-bold text-lg">Credit or Debit Card</h3>
+                <h3 className="text-primary font-bold text-lg uppercase tracking-tight">Credit or Debit Card</h3>
                 <div className="flex gap-2.5 text-on-surface-variant/70">
                   <CreditCard size={20} />
                   <Wifi size={20} />
@@ -179,18 +179,18 @@ export default function PaymentPage() {
 
               <div className="space-y-5">
                 <div>
-                  <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5">Cardholder Name</label>
+                  <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5 ml-1">Cardholder Name</label>
                   <input
                     type="text"
                     value={cardName}
                     onChange={(e) => setCardName(e.target.value.toUpperCase())}
                     placeholder="ALEXANDER KINETIC"
-                    className="w-full bg-surface-container-low border border-transparent rounded-lg p-3.5 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
+                    className="w-full bg-surface-container-low border border-transparent rounded-xl p-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5">Card Number</label>
+                  <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5 ml-1">Card Number</label>
                   <div className="relative">
                     <input
                       type="text"
@@ -198,7 +198,7 @@ export default function PaymentPage() {
                       onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                       maxLength={19}
                       placeholder="0000 0000 0000 0000"
-                      className="w-full bg-surface-container-low border border-transparent rounded-lg p-3.5 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
+                      className="w-full bg-surface-container-low border border-transparent rounded-xl p-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
                     />
                     <Lock size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-primary/60" />
                   </div>
@@ -206,25 +206,25 @@ export default function PaymentPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5">Expiry Date</label>
+                    <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5 ml-1">Expiry Date</label>
                     <input
                       type="text"
                       value={expiry}
                       onChange={(e) => setExpiry(formatExpiry(e.target.value))}
                       maxLength={7}
                       placeholder="MM / YY"
-                      className="w-full bg-surface-container-low border border-transparent rounded-lg p-3.5 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
+                      className="w-full bg-surface-container-low border border-transparent rounded-xl p-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5">CVC / CVV</label>
+                    <label className="block text-[10px] font-bold text-primary tracking-widest uppercase mb-1.5 ml-1">CVC / CVV</label>
                     <input
                       type="text"
                       value={cvc}
                       onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
                       maxLength={4}
                       placeholder="123"
-                      className="w-full bg-surface-container-low border border-transparent rounded-lg p-3.5 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
+                      className="w-full bg-surface-container-low border border-transparent rounded-xl p-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary/30 placeholder:text-on-surface-variant/50 transition-all outline-none"
                     />
                   </div>
                 </div>
@@ -232,11 +232,12 @@ export default function PaymentPage() {
                 <div className="flex items-start gap-3 pt-2">
                   <input
                     type="checkbox"
+                    id="saveCard"
                     checked={saveCard}
                     onChange={(e) => setSaveCard(e.target.checked)}
                     className="mt-0.5 w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary bg-surface-container-low cursor-pointer"
                   />
-                  <label className="text-xs text-on-surface-variant leading-relaxed cursor-pointer" onClick={() => setSaveCard(!saveCard)}>
+                  <label htmlFor="saveCard" className="text-xs text-on-surface-variant leading-relaxed cursor-pointer select-none">
                     Save card details for future high-velocity events
                   </label>
                 </div>
@@ -245,37 +246,39 @@ export default function PaymentPage() {
 
 
             <div className="mb-8 lg:mb-0">
-              <h4 className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase mb-3">Preview: Transaction Processing State</h4>
-              <div className="bg-surface-container-low rounded-lg p-4 flex items-center gap-3 border border-outline-variant/10">
+              <h4 className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase mb-3 ml-1">Transaction Processing State</h4>
+              <div className="bg-surface-container-low rounded-xl p-4 flex items-center gap-3 border border-outline-variant/10">
                 <Loader className={`text-primary/70 ${processing ? 'animate-spin' : ''}`} size={20} />
-                <span className="text-sm text-on-surface-variant font-medium">Processing Secure Transaction...</span>
+                <span className="text-sm text-on-surface-variant font-medium">
+                  {processing ? 'Processing Secure Transaction...' : 'Awaiting Card Input...'}
+                </span>
               </div>
             </div>
           </div>
 
 
-          <div className="lg:col-span-5 flex flex-col h-full">
+          <div className="lg:col-span-5 flex flex-col h-full order-1 lg:order-2">
 
-            <div className="relative bg-[#100b29] rounded-xl overflow-hidden p-6 md:p-8 mb-6 text-white shadow-ambient shrink-0">
+            <div className="relative bg-[#100b29] rounded-2xl overflow-hidden p-6 md:p-8 mb-6 text-white shadow-ambient shrink-0">
               <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-cover bg-center" style={{ backgroundImage: `url(${eventImage})` }} />
               <div className="absolute inset-0 bg-gradient-to-t from-[#100b29] via-[#100b29]/80 to-transparent" />
 
               <div className="relative z-10 flex flex-col justify-end min-h-[140px]">
                 <span className="bg-secondary text-white text-[9px] font-bold px-2.5 py-1 rounded-full w-max tracking-widest mb-3 shadow-ambient">
-                  {checkoutResult === 'success' ? 'CONFIRMED' : 'CONFIRMED'}
+                  {checkoutResult === 'success' ? 'CONFIRMED' : 'RESERVED'}
                 </span>
                 <h2 className="text-2xl md:text-3xl font-black uppercase leading-[1.1] mb-1.5">{eventName}</h2>
                 <p className="text-xs text-white/70">{eventVenue}</p>
 
                 <div className="absolute right-0 bottom-0 text-right">
-                  <div className="text-[9px] font-bold tracking-widest text-white/50 mb-0.5">TIMER</div>
+                  <div className="text-[9px] font-bold tracking-widest text-white/50 mb-0.5">TIME LEFT</div>
                   <div className="font-mono text-xl font-bold">{formatTimer(timer)}</div>
                 </div>
               </div>
             </div>
 
 
-            <div className="bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-ambient mb-6 shrink-0 border border-outline-variant/10">
+            <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-ambient mb-6 shrink-0 border border-outline-variant/10">
               <div className="flex justify-between items-center border-b border-outline-variant/20 pb-4 mb-5">
                 <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Transaction ID</span>
                 <span className="font-mono text-[11px] font-medium text-on-surface-variant">{txId}</span>
@@ -285,7 +288,7 @@ export default function PaymentPage() {
                 {basketItems.map((item, i) => (
                   <div key={i} className="flex justify-between items-start">
                     <div>
-                      <div className="font-bold text-[13px] text-on-surface mb-0.5">{item.ticketTypeName}</div>
+                      <div className="font-bold text-[13px] text-on-surface mb-0.5 uppercase tracking-tight">{item.ticketTypeName}</div>
                       <div className="text-[11px] text-on-surface-variant">Qty {item.quantity} • {item.eventName}</div>
                     </div>
                     <div className="font-bold text-primary text-sm">${(item.unitPrice * item.quantity).toFixed(2)}</div>
@@ -294,10 +297,10 @@ export default function PaymentPage() {
                 {basketItems.length === 0 && (
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="font-bold text-[13px] text-on-surface mb-0.5">General Admission VIP</div>
-                      <div className="text-[11px] text-on-surface-variant">Tier 2 Access • Gate A Entrance</div>
+                      <div className="font-bold text-[13px] text-on-surface mb-0.5 uppercase tracking-tight">Basket Empty</div>
+                      <div className="text-[11px] text-on-surface-variant">No items selected</div>
                     </div>
-                    <div className="font-bold text-primary text-sm">$249.00</div>
+                    <div className="font-bold text-primary text-sm">$0.00</div>
                   </div>
                 )}
 
@@ -311,19 +314,19 @@ export default function PaymentPage() {
                 </div>
               </div>
 
-              <div className="bg-surface-container-low -mx-6 md:-mx-8 -mb-6 md:-mb-8 p-6 md:p-8 rounded-b-xl border-t border-outline-variant/10">
+              <div className="bg-surface-container-low -mx-6 md:-mx-8 -mb-6 md:-mb-8 p-6 md:p-8 rounded-b-2xl border-t border-outline-variant/10">
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <div className="text-[9px] font-bold text-on-surface-variant tracking-widest uppercase mb-1">Total Payable</div>
                     <div className="text-3xl font-black text-on-surface">${grandTotal.toFixed(2)}</div>
                   </div>
-                  <div className="bg-primary/10 text-primary font-bold text-[9px] px-2 py-1 rounded tracking-wider mt-1">USD</div>
+                  <div className="bg-primary/10 text-primary font-bold text-[9px] px-2 py-1 rounded tracking-wider mt-1 uppercase">USD</div>
                 </div>
 
                 <button
                   onClick={handleCheckout}
                   disabled={processing || basketItems.length === 0}
-                  className="w-full bg-[#056f4a] hover:bg-[#045c3d] text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors disabled:opacity-70 shadow-lg shadow-[#056f4a]/20"
+                  className="w-full bg-[#056f4a] hover:bg-[#045c3d] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-70 shadow-lg shadow-[#056f4a]/20 uppercase tracking-widest"
                 >
                   {processing ? <Loader className="animate-spin" size={18} /> : 'PAY NOW'}
                   {!processing && <ChevronRight size={18} />}
@@ -339,7 +342,7 @@ export default function PaymentPage() {
 
             <div className="grid grid-cols-2 gap-4 mb-10 shrink-0">
               <div className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-3 shadow-ambient border border-outline-variant/5">
-                <div className="bg-[#e2ffe9] text-secondary p-2.5 rounded-lg">
+                <div className="bg-[#e2ffe9] text-[#056f4a] p-2.5 rounded-lg">
                   <Zap size={18} fill="currentColor" />
                 </div>
                 <div>
@@ -360,17 +363,21 @@ export default function PaymentPage() {
 
 
             <div className="text-center mt-auto pb-6">
-              <div className="flex justify-center gap-6 mb-4">
-                <a href="#" className="text-[10px] text-on-surface-variant hover:text-primary transition-colors">Terms of Sale</a>
-                <a href="#" className="text-[10px] text-on-surface-variant hover:text-primary transition-colors">Privacy Policy</a>
-                <a href="#" className="text-[10px] text-on-surface-variant hover:text-primary transition-colors">Anti-Scalper Policy</a>
+              <div className="flex justify-center gap-4 sm:gap-6 mb-4">
+                <a href="#" className="text-[9px] sm:text-[10px] text-on-surface-variant hover:text-primary transition-colors">Terms of Sale</a>
+                <a href="#" className="text-[9px] sm:text-[10px] text-on-surface-variant hover:text-primary transition-colors">Privacy Policy</a>
+                <a href="#" className="text-[9px] sm:text-[10px] text-on-surface-variant hover:text-primary transition-colors">Anti-Scalper</a>
               </div>
               <div className="text-[9px] text-on-surface-variant/50 uppercase tracking-widest">
-                © 2024 KINETIC TICKETING SYSTEMS INC.
+                © 2024 SOCRATIC EVENT TICKETING
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
       </div>
     </div>
   );
