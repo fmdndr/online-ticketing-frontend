@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { User, Bell, ShoppingBag, Menu, X } from 'lucide-react';
 import { getUserRole } from '../../services/api';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
   const isAuthenticated = !!localStorage.getItem('auth_token');
   const role = getUserRole();
   const isAdmin = role === 'Admin';
