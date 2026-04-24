@@ -10,13 +10,6 @@ export default function Header() {
   const role = getUserRole();
   const isAdmin = role === 'Admin';
 
-  // Close mobile menu when route changes
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      setIsMobileMenuOpen(false);
-    }
-  }, [location, isMobileMenuOpen]);
-
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -37,6 +30,8 @@ export default function Header() {
     ] : []),
   ];
 
+  const closeMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <header className="fixed top-0 w-full z-[100] bg-surface/80 backdrop-blur-glass border-b border-outline-variant/15 transition-all">
       <div className="max-w-7xl mx-auto px-4 md:px-6 h-[72px] flex items-center justify-between">
@@ -50,7 +45,7 @@ export default function Header() {
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-3 group" onClick={closeMenu}>
             <img src="/socratic-event-icon.png" alt="Socratic Event" className="w-8 h-8 object-contain" />
             <span className="text-xl font-extrabold tracking-tightest text-on-surface">
               SOCRATIC
@@ -90,7 +85,11 @@ export default function Header() {
               <Bell size={20} />
             </button>
           )}
-          <Link to={isAuthenticated ? "/account" : "/login"} className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded transition-colors">
+          <Link 
+            to={isAuthenticated ? "/account" : "/login"} 
+            className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded transition-colors"
+            onClick={closeMenu}
+          >
             <User size={20} />
           </Link>
         </div>
@@ -107,6 +106,7 @@ export default function Header() {
             <NavLink
               key={label}
               to={to}
+              onClick={closeMenu}
               className={({ isActive }) =>
                 `text-2xl font-extrabold tracking-tightest uppercase p-4 rounded-xl transition-all ${
                   isActive ? 'bg-primary text-on-primary shadow-primary' : 'text-on-surface hover:bg-surface-container-low'
@@ -125,6 +125,7 @@ export default function Header() {
              {!isAuthenticated && (
                <Link 
                  to="/login" 
+                 onClick={closeMenu}
                  className="block w-full text-center bg-surface-container-high text-on-surface font-extrabold py-4 rounded-xl"
                >
                  SIGN IN

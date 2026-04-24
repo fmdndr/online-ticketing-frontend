@@ -152,9 +152,15 @@ export default function AdminPage() {
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-        <div className="mb-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-2">Sales Velocity</h1>
-          <p className="text-on-surface-variant text-lg">Real-time throughput monitoring for live event distribution channels.</p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-2">Sales Velocity</h1>
+            <p className="text-on-surface-variant text-lg">Real-time throughput monitoring for live event distribution channels.</p>
+          </div>
+          <div className="bg-surface-container-low px-6 py-4 rounded-2xl border border-outline-variant/15 flex flex-col items-end">
+            <div className="text-[10px] font-extrabold text-primary tracking-widest uppercase mb-1">Total System Liquidity</div>
+            <div className="text-3xl font-black text-on-surface">${totalRevenue.toFixed(2)}</div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
