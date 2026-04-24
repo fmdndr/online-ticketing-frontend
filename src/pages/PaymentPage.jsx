@@ -121,12 +121,12 @@ export default function PaymentPage() {
   const backTo = eventInfo?.id ? `/event/${eventInfo.id}` : '/';
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface pt-[72px]">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
 
       {checkoutResult === 'success' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
           <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-ambient max-w-md w-full text-center border border-outline-variant/10">
             <CheckCircle size={56} className="text-secondary mx-auto mb-4" />
             <h4 className="text-2xl font-black text-on-surface mb-2">Payment Confirmed!</h4>
@@ -143,9 +143,9 @@ export default function PaymentPage() {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
 
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex justify-between items-center mb-8 md:mb-12">
           <div className="font-black text-primary text-lg tracking-tight uppercase flex items-center gap-2 leading-tight">
             <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center text-white shrink-0">
               <Shield size={14} />
@@ -157,18 +157,20 @@ export default function PaymentPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
 
-          <div className="lg:col-span-7 order-2 lg:order-1">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-[1.1] tracking-tightest mb-4">
-              COMPLETE SECURE<br />PAYMENT
-            </h1>
-            <p className="text-on-surface-variant mb-8 text-sm md:text-base font-retina max-w-sm">
-              Review your transaction and finalize the ledger entry.
-            </p>
+          <div className="lg:col-span-7 space-y-8">
+            <div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-[1.1] tracking-tightest mb-4">
+                COMPLETE SECURE<br />PAYMENT
+              </h1>
+              <p className="text-on-surface-variant text-sm md:text-base font-retina max-w-sm">
+                Review your transaction and finalize the ledger entry.
+              </p>
+            </div>
 
 
-            <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-ambient mb-8 border border-outline-variant/10">
+            <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-ambient border border-outline-variant/10">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-primary font-bold text-lg uppercase tracking-tight">Credit or Debit Card</h3>
                 <div className="flex gap-2.5 text-on-surface-variant/70">
@@ -243,23 +245,12 @@ export default function PaymentPage() {
                 </div>
               </div>
             </div>
-
-
-            <div className="mb-8 lg:mb-0">
-              <h4 className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase mb-3 ml-1">Transaction Processing State</h4>
-              <div className="bg-surface-container-low rounded-xl p-4 flex items-center gap-3 border border-outline-variant/10">
-                <Loader className={`text-primary/70 ${processing ? 'animate-spin' : ''}`} size={20} />
-                <span className="text-sm text-on-surface-variant font-medium">
-                  {processing ? 'Processing Secure Transaction...' : 'Awaiting Card Input...'}
-                </span>
-              </div>
-            </div>
           </div>
 
 
-          <div className="lg:col-span-5 flex flex-col h-full order-1 lg:order-2">
+          <div className="lg:col-span-5 flex flex-col gap-6">
 
-            <div className="relative bg-[#100b29] rounded-2xl overflow-hidden p-6 md:p-8 mb-6 text-white shadow-ambient shrink-0">
+            <div className="relative bg-[#100b29] rounded-2xl overflow-hidden p-6 md:p-8 text-white shadow-ambient shrink-0">
               <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-cover bg-center" style={{ backgroundImage: `url(${eventImage})` }} />
               <div className="absolute inset-0 bg-gradient-to-t from-[#100b29] via-[#100b29]/80 to-transparent" />
 
@@ -278,7 +269,7 @@ export default function PaymentPage() {
             </div>
 
 
-            <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-ambient mb-6 shrink-0 border border-outline-variant/10">
+            <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-ambient shrink-0 border border-outline-variant/10">
               <div className="flex justify-between items-center border-b border-outline-variant/20 pb-4 mb-5">
                 <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Transaction ID</span>
                 <span className="font-mono text-[11px] font-medium text-on-surface-variant">{txId}</span>

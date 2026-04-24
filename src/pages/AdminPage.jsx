@@ -106,8 +106,9 @@ export default function AdminPage() {
         ticketTypes: [{ name: 'Standard', price: 100, availableQuantity: 100 }],
       });
       fetchData();
+      addToast('Event created successfully', 'success');
     } catch (err) {
-      addToast('Failed to create event: ' + err.message);
+      addToast('Failed to create event: ' + err.message, 'error');
     } finally {
       setCreating(false);
     }
@@ -118,8 +119,9 @@ export default function AdminPage() {
     try {
       await deleteEvent(id);
       fetchData();
+      addToast('Event deleted successfully', 'success');
     } catch (err) {
-      addToast('Failed to delete event: ' + err.message);
+      addToast('Failed to delete event: ' + err.message, 'error');
     }
   };
 
