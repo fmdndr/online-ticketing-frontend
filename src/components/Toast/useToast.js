@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 export function useToast() {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback((message, type = 'danger') => {
+  const addToast = useCallback((message, type = 'error') => {
     const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {

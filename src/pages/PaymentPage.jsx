@@ -93,6 +93,29 @@ export default function PaymentPage() {
       return;
     }
 
+    const expiryClean = expiry.replace(/\D/g, '');
+    if (expiryClean.length !== 4) {
+      addToast('Invalid expiry date format. Please use MM / YY.', 'warning');
+      return;
+    }
+
+    const month = parseInt(expiryClean.substring(0, 2), 10);
+    const year = parseInt(expiryClean.substring(2, 4), 10) + 2000;
+
+    if (month < 1 || month > 12) {
+      addToast('Invalid expiry month.', 'warning');
+      return;
+    }
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+      addToast('Your card has expired. Please use a valid card.', 'warning');
+      return;
+    }
+
     setProcessing(true);
     setCheckoutResult(null);
     setCheckoutMessage('');

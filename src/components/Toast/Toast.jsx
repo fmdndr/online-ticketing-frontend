@@ -1,35 +1,36 @@
 export function ToastContainer({ toasts, onRemove }) {
   if (toasts.length === 0) return null;
   return (
-    <div
-      className="toast-container position-fixed top-0 end-0 p-3"
-      style={{ zIndex: 9999 }}
-    >
-      {toasts.map((t) => (
-        <div
-          key={t.id}
-          className={`toast show align-items-center text-white border-0 mb-2 ${
-            t.type === 'success'
-              ? 'bg-success'
-              : t.type === 'warning'
-              ? 'bg-warning text-dark'
-              : 'bg-danger'
-          }`}
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="d-flex">
-            <div className="toast-body fw-medium">{t.message}</div>
+    <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+      {toasts.map((t) => {
+        let bgColor = 'bg-red-500';
+        let textColor = 'text-white';
+        if (t.type === 'success') {
+          bgColor = 'bg-green-500';
+        } else if (t.type === 'warning') {
+          bgColor = 'bg-yellow-500';
+          textColor = 'text-black';
+        } else if (t.type === 'error' || t.type === 'danger') {
+          bgColor = 'bg-red-500';
+        }
+
+        return (
+          <div
+            key={t.id}
+            className={`pointer-events-auto flex items-center justify-between p-4 rounded shadow-lg min-w-[300px] ${bgColor} ${textColor}`}
+            role="alert"
+          >
+            <div className="font-medium text-sm">{t.message}</div>
             <button
               type="button"
-              className="btn-close btn-close-white me-2 m-auto"
-              aria-label="Close"
+              className="ml-4 opacity-80 hover:opacity-100"
               onClick={() => onRemove(t.id)}
-            />
+            >
+              ✕
+            </button>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
